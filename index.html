@@ -1,0 +1,3045 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow">
+<title>ProfitTax UA</title>
+
+<!-- Favicon: ₴ у синьо-зеленому градієнті -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237986ef'/%3E%3Cstop offset='1' stop-color='%2334d399'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='46' font-family='system-ui,sans-serif' font-size='40' font-weight='700' text-anchor='middle' fill='white'%3E%E2%82%B4%3C/text%3E%3C/svg%3E">
+
+<!-- Tailwind via CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════
+     SECTION: THEME (CSS variables для dark/light)
+     ═══════════════════════════════════════════════════════════ */
+
+  html[data-theme="dark"] {
+    --bg-base: #14151a;
+    --bg-panel: #1b1d23;
+    --bg-panel-2: #23252c;
+    --bg-panel-3: #2b2d35;
+    --bg-table-header: #191b21;
+    --bg-group-header: #1f2129;
+    --bg-overlay: rgba(20, 21, 26, 0.75);
+    --bg-hover: rgba(121, 134, 239, 0.08);
+    --text-primary: #ecedf0;
+    --text-secondary: #b9babf;
+    --text-tertiary: #8b8c92;
+    --text-muted: #5c5d63;
+    --border-subtle: #2b2d35;
+    --border: #363840;
+    --border-strong: #434550;
+    --accent: #7986ef;
+    --accent-bg: rgba(121, 134, 239, 0.12);
+    --pos: #34d399;
+    --pos-soft: #6ee7b7;
+    --pos-bg: rgba(52, 211, 153, 0.12);
+    --neg: #f87171;
+    --neg-soft: #fca5a5;
+    --neg-bg: rgba(248, 113, 113, 0.12);
+    --warn: #fbbf24;
+    --warn-bg: rgba(251, 191, 36, 0.12);
+    --tooltip-bg: #2b2d35;
+    --tooltip-border: #434550;
+    --tooltip-text: #ecedf0;
+    --scrollbar-track: #1b1d23;
+    --scrollbar-thumb: #363840;
+    --scrollbar-thumb-hover: #434550;
+  }
+
+  html[data-theme="light"] {
+    --bg-base: #f7f7f8;
+    --bg-panel: #ffffff;
+    --bg-panel-2: #fafafb;
+    --bg-panel-3: #f0f0f3;
+    --bg-table-header: #f4f4f6;
+    --bg-group-header: #eeeef1;
+    --bg-overlay: rgba(247, 247, 248, 0.75);
+    --bg-hover: rgba(94, 106, 210, 0.06);
+    --text-primary: #1a1b20;
+    --text-secondary: #42434a;
+    --text-tertiary: #6b6d75;
+    --text-muted: #9a9ca3;
+    --border-subtle: #eaeaed;
+    --border: #dcdde0;
+    --border-strong: #c8c9ce;
+    --accent: #5e6ad2;
+    --accent-bg: rgba(94, 106, 210, 0.08);
+    --pos: #059669;
+    --pos-soft: #10b981;
+    --pos-bg: rgba(5, 150, 105, 0.09);
+    --neg: #dc2626;
+    --neg-soft: #ef4444;
+    --neg-bg: rgba(220, 38, 38, 0.08);
+    --warn: #d97706;
+    --warn-bg: rgba(217, 119, 6, 0.08);
+    --tooltip-bg: #1f2129;
+    --tooltip-border: #363840;
+    --tooltip-text: #ecedf0;
+    --scrollbar-track: #f0f0f3;
+    --scrollbar-thumb: #c8c9ce;
+    --scrollbar-thumb-hover: #a5a6ab;
+  }
+
+  html, body, #root {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'ss02', 'cv11';
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  html[data-theme="dark"] body::before {
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(121, 134, 239, 0.06), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(52, 211, 153, 0.03), transparent 45%);
+  }
+  html[data-theme="light"] body::before {
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(94, 106, 210, 0.04), transparent 50%),
+      radial-gradient(circle at 85% 90%, rgba(5, 150, 105, 0.03), transparent 50%);
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .num-animate { animation: fadeSlideUp 0.3s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .fade-in { animation: fadeIn 0.25s ease-out; }
+
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .card-hover:hover {
+    border-color: var(--border);
+    transform: translateY(-1px);
+  }
+
+  .dropzone {
+    border: 2px dashed var(--border);
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+  .dropzone:hover { border-color: var(--border-strong); background: var(--bg-panel-2); }
+  .dropzone.drop-active {
+    border-color: var(--accent) !important;
+    background: var(--accent-bg) !important;
+  }
+  .dropzone.loaded {
+    border-color: var(--pos) !important;
+    background: var(--pos-bg) !important;
+    border-style: solid !important;
+  }
+
+  tbody tr.data-row:hover { background: var(--bg-hover); }
+
+  select {
+    background: var(--bg-panel-2);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%238b8c92' d='M5 6L0 0h10z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    min-width: 100px;
+  }
+  select:focus { outline: none; border-color: var(--accent); }
+
+  input[type="text"], input[type="number"] {
+    background: var(--bg-panel-2);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+  /* Theme utility classes */
+  .t-text-primary { color: var(--text-primary); }
+  .t-text-secondary { color: var(--text-secondary); }
+  .t-text-tertiary { color: var(--text-tertiary); }
+  .t-text-muted { color: var(--text-muted); }
+  .t-text-accent { color: var(--accent); }
+  .t-text-pos { color: var(--pos); }
+  .t-text-neg { color: var(--neg); }
+  .t-text-warn { color: var(--warn); }
+  .t-bg-panel { background-color: var(--bg-panel); }
+  .t-bg-panel-2 { background-color: var(--bg-panel-2); }
+  .t-border-subtle { border-color: var(--border-subtle); }
+  .t-border { border-color: var(--border); }
+
+  /* Info tooltip on hover */
+  .info-tip:hover { background: var(--accent-bg) !important; color: var(--accent) !important; border-color: var(--accent) !important; }
+  .info-tip:hover .info-tip-body { opacity: 1 !important; }
+  .info-tip .info-tip-body::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--tooltip-bg);
+  }
+
+  /* Recharts override */
+  .recharts-surface { overflow: visible; }
+  .recharts-cartesian-axis-tick-value tspan { fill: var(--text-tertiary); }
+  .recharts-default-tooltip { display: none !important; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "recharts": "https://esm.sh/recharts@2.13.0?deps=react@18.3.1"
+  }
+}
+</script>
+
+<script type="module">
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { createRoot } from 'react-dom/client';
+import {
+  BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, ReferenceLine, LineChart, Line, Legend
+} from 'recharts';
+
+const h = React.createElement;
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: CONSTANTS
+// ═══════════════════════════════════════════════════════════
+
+const UA_TAX_RATES = {
+  dividends: { pdfo: 0.09, vz: 0.05 },       // актуальні ставки (з 2025)
+  capitalGains: { pdfo: 0.18, vz: 0.05 },
+};
+
+/**
+ * Військовий збір: 1.5% по 2024 рік включно, 5% з 2025 року.
+ * Закон №4015-IX підвищив ставку з 01.12.2024, але для доходів, що декларуються
+ * фізособами самостійно за підсумками року, діє спецпорядок переходу:
+ *   — Доходи 2024 року → ВЗ 1.5% (незалежно від місяця)
+ *   — Доходи з 01.01.2025 → ВЗ 5%
+ */
+const VZ_RATE_CHANGE_DATE = '2025-01-01';
+const VZ_RATE_OLD = 0.015;
+const VZ_RATE_NEW = 0.05;
+
+function getVzRateForDate(dateISO) {
+  return (dateISO && dateISO < VZ_RATE_CHANGE_DATE) ? VZ_RATE_OLD : VZ_RATE_NEW;
+}
+
+function getVzRateForYear(year) {
+  // Для капгейну — ставка за рік звіту (NET-прибуток за рік)
+  return (year && year <= 2024) ? VZ_RATE_OLD : VZ_RATE_NEW;
+}
+
+const NBU_API = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange';
+
+const CHART_COLORS = ['#7986ef', '#34d399', '#fbbf24', '#f87171', '#a78bfa', '#22d3ee', '#ec4899', '#6ee7b7', '#fb923c', '#818cf8', '#2dd4bf', '#fda4af'];
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: XML_PARSER (IBKR Flex Query)
+// ═══════════════════════════════════════════════════════════
+
+function parseIBKRXml(xmlString) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlString, 'text/xml');
+  const parseErr = doc.querySelector('parsererror');
+  if (parseErr) throw new Error('Помилка парсингу XML: ' + parseErr.textContent.slice(0, 200));
+  const root = doc.querySelector('FlexQueryResponse');
+  if (!root) throw new Error('Це не IBKR Flex Query XML (немає FlexQueryResponse)');
+
+  const meta = {
+    queryName: root.getAttribute('queryName') || '',
+    type: root.getAttribute('type') || '',
+  };
+  const accounts = [];
+  doc.querySelectorAll('FlexStatement').forEach((stmt) => {
+    const acc = {
+      accountId: stmt.getAttribute('accountId') || '',
+      fromDate: ibkrDateToISO(stmt.getAttribute('fromDate')),
+      toDate: ibkrDateToISO(stmt.getAttribute('toDate')),
+      whenGenerated: stmt.getAttribute('whenGenerated') || '',
+      lots: [],
+      cashTransactions: [],
+    };
+    stmt.querySelectorAll('Trades > Lot').forEach((lot) => {
+      const attrs = {};
+      for (const a of lot.attributes) attrs[a.name] = a.value;
+      acc.lots.push(normalizeLot(attrs));
+    });
+    stmt.querySelectorAll('CashTransactions > CashTransaction').forEach((ct) => {
+      const attrs = {};
+      for (const a of ct.attributes) attrs[a.name] = a.value;
+      acc.cashTransactions.push(normalizeCash(attrs));
+    });
+    accounts.push(acc);
+  });
+  return { meta, accounts };
+}
+
+function normalizeLot(a) {
+  return {
+    ...a,
+    quantity: parseFloat(a.quantity) || 0,
+    tradePrice: parseFloat(a.tradePrice) || 0,
+    cost: parseFloat(a.cost) || 0,
+    fifoPnlRealized: parseFloat(a.fifoPnlRealized) || 0,
+    fxRateToBase: parseFloat(a.fxRateToBase) || 1,
+    tradeDateISO: ibkrDateToISO(a.tradeDate),
+    dateTimeISO: ibkrDateToISO(a.dateTime),
+    openDateTimeISO: ibkrDateToISO(a.openDateTime),
+    reportDateISO: ibkrDateToISO(a.reportDate),
+  };
+}
+
+function normalizeCash(a) {
+  return {
+    ...a,
+    amount: parseFloat(a.amount) || 0,
+    fxRateToBase: parseFloat(a.fxRateToBase) || 1,
+    dateTimeISO: ibkrDateToISO(a.dateTime),
+    settleDateISO: ibkrDateToISO(a.settleDate),
+    exDateISO: ibkrDateToISO(a.exDate),
+    reportDateISO: ibkrDateToISO(a.reportDate),
+  };
+}
+
+function ibkrDateToISO(s) {
+  if (!s) return '';
+  const str = String(s).trim();
+  if (!str) return '';
+  const datePart = str.split(';')[0];
+  if (datePart.length === 8 && /^\d+$/.test(datePart)) {
+    return `${datePart.slice(0, 4)}-${datePart.slice(4, 6)}-${datePart.slice(6, 8)}`;
+  }
+  return str;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: CLASSIFIER (Dividends + WHT grouping + ROC)
+// ═══════════════════════════════════════════════════════════
+
+function classifyTransactions(parsed) {
+  // Ключ "виплати" з description: пов'язує Dividend ↔ його Withholding,
+  // навіть коли в один день по тикеру кілька різних виплат (Ordinary + Cap Gain).
+  const makeDistKey = (symbol, desc) => {
+    const s = String(desc || '');
+    const m = s.match(/(USD?\s+[\d.]+)\s+PER\s+SHARE/i);
+    return `${symbol}|${m ? m[1].replace(/\s+/g, ' ') : 'unknown'}`;
+  };
+
+  const accounts = parsed.accounts.map((acc) => {
+    const dividends = acc.cashTransactions.filter((c) => c.type === 'Dividends');
+    const whtAll = acc.cashTransactions.filter((c) => c.type === 'Withholding Tax');
+    const other = acc.cashTransactions.filter(
+      (c) => c.type !== 'Dividends' && c.type !== 'Withholding Tax'
+    );
+    const whtByKey = new Map();
+    whtAll.forEach((w) => {
+      const key = makeDistKey(w.symbol, w.description);
+      if (!whtByKey.has(key)) whtByKey.set(key, []);
+      whtByKey.get(key).push(w);
+    });
+    const enrichedDividends = dividends.map((div) => {
+      const key = makeDistKey(div.symbol, div.description);
+      const relatedWHT = whtByKey.get(key) || [];
+      const whtNegSum = relatedWHT.filter((w) => w.amount < 0).reduce((s, w) => s + w.amount, 0);
+      const whtPosSum = relatedWHT.filter((w) => w.amount > 0).reduce((s, w) => s + w.amount, 0);
+      const whtNet = whtNegSum + whtPosSum;           // нетто після ROC-реверсій
+      const whtGrossUSD = Math.abs(whtNegSum);        // повна сума утримання в США (для відображення)
+      const rocReceivedUSD = whtPosSum;               // позитивна реверсія = фактично повернутий капітал
+      const rocReversedUSD = Math.min(whtGrossUSD, whtPosSum); // скільки саме утримання було "перекласифіковано"
+      return {
+        ...div,
+        grossUSD: div.amount,
+        relatedWHT,
+        whtWithheldUSD: whtNegSum,   // від'ємне, для сумісності
+        whtReversedUSD: whtPosSum,   // для сумісності
+        whtGrossUSD,                 // ← НОВЕ: повна сума утримання (для WHT cur у таблиці)
+        whtNetUSD: whtNet,           // нетто — для податкового credit в агресивному режимі
+        rocReceivedUSD,              // ← НОВЕ: реально повернуто на рахунок (для ROC колонки, Net cur, Чистий дохід)
+        rocReversedUSD,
+        hasROC: whtPosSum > 0.001,
+      };
+    });
+    return {
+      ...acc,
+      classified: {
+        dividends: enrichedDividends,
+        withholdings: whtAll,
+        other,
+        trades: acc.lots,
+      },
+    };
+  });
+  return { ...parsed, accounts };
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: NBU_RATES (IndexedDB cache + fetch)
+// ═══════════════════════════════════════════════════════════
+
+const CACHE_DB_NAME = 'ibkr-tax-ua';
+const CACHE_STORE = 'nbu_rates';
+
+function openCache() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(CACHE_DB_NAME, 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(CACHE_STORE)) {
+        db.createObjectStore(CACHE_STORE, { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getCachedRate(currency, dateISO) {
+  try {
+    const db = await openCache();
+    return new Promise((resolve) => {
+      const tx = db.transaction(CACHE_STORE, 'readonly');
+      const store = tx.objectStore(CACHE_STORE);
+      const req = store.get(`${currency}_${dateISO}`);
+      req.onsuccess = () => resolve(req.result ? req.result.rate : null);
+      req.onerror = () => resolve(null);
+    });
+  } catch { return null; }
+}
+
+async function setCachedRate(currency, dateISO, rate) {
+  try {
+    const db = await openCache();
+    const tx = db.transaction(CACHE_STORE, 'readwrite');
+    tx.objectStore(CACHE_STORE).put({ key: `${currency}_${dateISO}`, rate, currency, date: dateISO });
+  } catch {}
+}
+
+async function clearRateCache() {
+  try {
+    const db = await openCache();
+    const tx = db.transaction(CACHE_STORE, 'readwrite');
+    tx.objectStore(CACHE_STORE).clear();
+  } catch {}
+}
+
+async function fetchNBURate(currency, dateISO) {
+  const d = dateISO.replace(/-/g, '');
+  const url = `${NBU_API}?valcode=${currency}&date=${d}&json`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`NBU API: ${resp.status}`);
+  const data = await resp.json();
+  if (!Array.isArray(data) || data.length === 0) return null;
+  return data[0].rate;
+}
+
+async function getRate(currency, dateISO, { useCache = true } = {}) {
+  if (!currency || !dateISO) return null;
+  if (currency === 'UAH') return 1;
+  if (useCache) {
+    const cached = await getCachedRate(currency, dateISO);
+    if (cached != null) return cached;
+  }
+  let d = new Date(dateISO + 'T12:00:00Z');
+  for (let i = 0; i < 10; i++) {
+    const tryISO = d.toISOString().slice(0, 10);
+    try {
+      const r = await fetchNBURate(currency, tryISO);
+      if (r != null) {
+        await setCachedRate(currency, dateISO, r);
+        return r;
+      }
+    } catch (e) {}
+    d.setUTCDate(d.getUTCDate() - 1);
+  }
+  return null;
+}
+
+async function setCachedRatesBulk(entries) {
+  try {
+    const db = await openCache();
+    return new Promise((resolve) => {
+      const tx = db.transaction(CACHE_STORE, 'readwrite');
+      const store = tx.objectStore(CACHE_STORE);
+      entries.forEach((e) => store.put({
+        key: `${e.currency}_${e.date}`,
+        currency: e.currency, date: e.date, rate: e.rate
+      }));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+  } catch {}
+}
+
+/**
+ * Статус кешу по валютах: { USD: {min, max, count}, EUR: {...} }
+ */
+async function getCacheCoverage() {
+  try {
+    const db = await openCache();
+    return new Promise((resolve) => {
+      const tx = db.transaction(CACHE_STORE, 'readonly');
+      const store = tx.objectStore(CACHE_STORE);
+      const req = store.openCursor();
+      const cov = {};
+      req.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          const { currency, date } = cursor.value;
+          if (!cov[currency]) cov[currency] = { min: date, max: date, count: 1 };
+          else {
+            cov[currency].count++;
+            if (date < cov[currency].min) cov[currency].min = date;
+            if (date > cov[currency].max) cov[currency].max = date;
+          }
+          cursor.continue();
+        } else resolve(cov);
+      };
+      req.onerror = () => resolve({});
+    });
+  } catch { return {}; }
+}
+
+async function getCachedRatesRange(currency, startISO, endISO) {
+  try {
+    const db = await openCache();
+    return new Promise((resolve) => {
+      const tx = db.transaction(CACHE_STORE, 'readonly');
+      const store = tx.objectStore(CACHE_STORE);
+      const req = store.openCursor();
+      const out = new Map();
+      req.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          const v = cursor.value;
+          if (v.currency === currency && v.date >= startISO && v.date <= endISO) {
+            out.set(v.date, v.rate);
+          }
+          cursor.continue();
+        } else resolve(out);
+      };
+      req.onerror = () => resolve(new Map());
+    });
+  } catch { return new Map(); }
+}
+
+/**
+ * Перелік робочих днів (Mon-Fri) у діапазоні startISO..endISO включно.
+ */
+function workingDaysInRange(startISO, endISO) {
+  const out = [];
+  const d = new Date(startISO + 'T12:00:00Z');
+  const end = new Date(endISO + 'T12:00:00Z');
+  while (d <= end) {
+    const dow = d.getUTCDay();
+    if (dow !== 0 && dow !== 6) out.push(d.toISOString().slice(0, 10));
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return out;
+}
+
+/**
+ * Завантаження курсів валюти за період: cache-first, fetch ТІЛЬКИ відсутніх днів.
+ * Використовує CORS-friendly per-day endpoint /NBUStatService/.../exchange?valcode=CCY&date=YYYYMMDD&json
+ * паралельно батчами по 8 запитів.
+ *
+ * Повертає { rates: Map<dateISO, rate>, tried, fetched, failed }.
+ */
+async function loadRatesForCurrency(currency, startISO, endISO, onBatchProgress) {
+  if (currency === 'UAH') return { rates: new Map(), tried: 0, fetched: 0, failed: 0 };
+  const cached = await getCachedRatesRange(currency, startISO, endISO);
+  const workDays = workingDaysInRange(startISO, endISO);
+  const missing = workDays.filter((d) => !cached.has(d));
+  const out = new Map(cached);
+  let fetched = 0, failed = 0;
+  const BATCH = 8;
+  for (let i = 0; i < missing.length; i += BATCH) {
+    const batch = missing.slice(i, i + BATCH);
+    const results = await Promise.all(batch.map(async (dateISO) => {
+      try {
+        const r = await fetchNBURate(currency, dateISO);
+        return { dateISO, rate: r };
+      } catch { return { dateISO, rate: null }; }
+    }));
+    const toCache = [];
+    results.forEach(({ dateISO, rate }) => {
+      if (rate != null) {
+        out.set(dateISO, rate);
+        toCache.push({ currency, date: dateISO, rate });
+        fetched++;
+      } else failed++;
+    });
+    if (toCache.length) await setCachedRatesBulk(toCache);
+    if (onBatchProgress) onBatchProgress(currency, Math.min(i + BATCH, missing.length), missing.length);
+  }
+  return { rates: out, tried: missing.length, fetched, failed };
+}
+
+/**
+ * Bulk-завантаження для набору валют за період.
+ * Повертає { flat, byCcy, diagnostics } — останнє потрібне для показу статусу користувачу.
+ */
+async function bulkLoadRates(currencies, startISO, endISO, onProgress) {
+  const result = new Map();
+  const byCcy = new Map();
+  const diagnostics = { byCurrency: {}, totalFailed: 0, totalFetched: 0, anyError: false };
+  for (let i = 0; i < currencies.length; i++) {
+    const ccy = currencies[i];
+    try {
+      if (onProgress) onProgress(ccy, 0, 0, i + 1, currencies.length);
+      const { rates, tried, fetched, failed } = await loadRatesForCurrency(ccy, startISO, endISO,
+        (c, done, total) => { if (onProgress) onProgress(c, done, total, i + 1, currencies.length); }
+      );
+      byCcy.set(ccy, rates);
+      rates.forEach((rate, date) => result.set(`${ccy}_${date}`, rate));
+      diagnostics.byCurrency[ccy] = { tried, fetched, failed, cached: rates.size };
+      diagnostics.totalFetched += fetched;
+      diagnostics.totalFailed += failed;
+      if (failed > 0) diagnostics.anyError = true;
+    } catch (e) {
+      console.error(`NBU ${ccy}:`, e);
+      diagnostics.byCurrency[ccy] = { tried: 0, fetched: 0, failed: -1, cached: 0, error: e.message };
+      diagnostics.anyError = true;
+    }
+  }
+  return { flat: result, byCcy, diagnostics };
+}
+
+/**
+ * Ефективний курс: точний день або walk-back до 10 днів для вихідних/свят.
+ */
+function effectiveRate(flatMap, currency, dateISO) {
+  if (!currency || !dateISO) return null;
+  if (currency === 'UAH') return 1;
+  const direct = flatMap.get(`${currency}_${dateISO}`);
+  if (direct != null) return direct;
+  let d = new Date(dateISO + 'T12:00:00Z');
+  for (let i = 0; i < 10; i++) {
+    d.setUTCDate(d.getUTCDate() - 1);
+    const iso = d.toISOString().slice(0, 10);
+    const r = flatMap.get(`${currency}_${iso}`);
+    if (r != null) return r;
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: TAX_ENGINE
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Розрахунок податку по одному дивіденду
+ * settings:
+ *   usWhtMode: 'conservative' | 'aggressive'
+ *
+ * База оподаткування = Gross (завжди, згідно з ПКУ).
+ * ROC не впливає на базу, не зменшує WHT, показується окремо як повернення капіталу.
+ */
+function calcDividendTax(div, rate, settings) {
+  const currency = div.currency || 'USD';
+  const grossUSD = div.grossUSD;
+  const whtGrossUSD = div.whtGrossUSD || 0;      // повна сума утримання США
+  const rocReceivedUSD = div.rocReceivedUSD || 0; // повернення капіталу (ROC)
+  const whtNetUSD = Math.abs(div.whtNetUSD || 0); // нетто — для credit у агресивному режимі
+
+  const grossUAH = grossUSD * (rate || 0);
+  const whtGrossUAH = whtGrossUSD * (rate || 0);
+  const rocReceivedUAH = rocReceivedUSD * (rate || 0);
+  const whtNetUAH = whtNetUSD * (rate || 0);
+
+  // База = Gross (ROC не зменшує базу — ПКУ не розмежовує типи виплат у класі "дивіденди іноземні")
+  const baseUAH = grossUAH;
+  const pdfo9UAH = baseUAH * UA_TAX_RATES.dividends.pdfo;
+  // ВЗ: 1.5% по 2024 рік, 5% з 2025 року — за датою виплати дивіденду
+  const vzRate = getVzRateForDate(div.date);
+  const vz5UAH = baseUAH * vzRate;
+
+  let pdfoToPayUAH, vzToPayUAH, creditUAH;
+  if (settings.usWhtMode === 'aggressive') {
+    // Credit — на суму фактично утриманого (нетто після ROC-реверсії), бо ROC це не податок
+    creditUAH = Math.min(pdfo9UAH, whtNetUAH);
+    pdfoToPayUAH = Math.max(0, pdfo9UAH - creditUAH);
+    vzToPayUAH = vz5UAH;
+  } else {
+    creditUAH = 0;
+    pdfoToPayUAH = pdfo9UAH;
+    vzToPayUAH = vz5UAH;
+  }
+
+  const totalTaxUAH = pdfoToPayUAH + vzToPayUAH;
+  // Фактично отримано на рахунок: gross − повне утримання + ROC − UA податок
+  const netReceivedUAH = grossUAH - whtGrossUAH + rocReceivedUAH - totalTaxUAH;
+
+  return {
+    currency, rate,
+    grossUSD, grossUAH,
+    baseUSD: grossUSD,                        // для сумісності
+    baseUAH,                                  // = grossUAH завжди
+    whtGrossUSD, whtGrossUAH,                 // ПОВНА сума утримання (для колонки WHT cur)
+    rocReceivedUSD, rocReceivedUAH,           // ROC (для колонки ROC)
+    // Для сумісності зі старим кодом і Dashboard:
+    usWhtUSD: whtGrossUSD,                    // тепер це ПОВНА сума (раніше була нетто)
+    usWhtUAH: whtGrossUAH,
+    rocReversedUSD: rocReceivedUSD,           // alias для старих місць що це використовують
+    pdfo9UAH, vz5UAH, vzRate,
+    creditUAH,
+    pdfoToPayUAH, vzToPayUAH, totalTaxUAH, netReceivedUAH,
+  };
+}
+
+/**
+ * Розрахунок P&L для одного лоту (закрита позиція)
+ *
+ * IBKR Flex Lot (CLOSED_LOT) поля:
+ *   cost            = invested sum (купівля, комісії включені в ціну)
+ *   tradePrice      = ціна ВІДКРИТТЯ (купівлі) ← не закриття!
+ *   fifoPnlRealized = realized P&L USD
+ *   Обчислюємо: proceeds = cost + fifoPnl; priceClose = proceeds / qty
+ */
+function calcCapitalGain(lot, openRate, closeRate) {
+  const qty = lot.quantity;
+  const priceOpenUSD = lot.tradePrice;
+  const costUSD = lot.cost;
+  const pnlUSD = lot.fifoPnlRealized;
+  const proceedsUSD = costUSD + pnlUSD;
+  const priceCloseUSD = qty ? (proceedsUSD / qty) : 0;
+  const costBasisUAH = costUSD * (openRate || 0);
+  const proceedsUAH = proceedsUSD * (closeRate || 0);
+  const pnlUAH = proceedsUAH - costBasisUAH;
+  return {
+    qty, priceOpenUSD, priceCloseUSD, costUSD, proceedsUSD,
+    openRate, closeRate, costBasisUAH, proceedsUAH,
+    pnlUSD, pnlUAH,
+    isProfit: pnlUAH > 0,
+  };
+}
+
+/**
+ * Master: розрахунок всіх дивідендів і угод
+ */
+function calculateAll(classified, rateMap, settings) {
+  const dividendsOut = [];
+  const tradesOut = [];
+
+  for (const acc of classified.accounts) {
+    for (const div of acc.classified.dividends) {
+      const currency = div.currency || 'USD';
+      const dateKey = div.settleDateISO || div.dateTimeISO;
+      const rate = effectiveRate(rateMap, currency, dateKey);
+      const calc = calcDividendTax(div, rate, settings);
+      dividendsOut.push({
+        accountId: acc.accountId,
+        symbol: div.symbol,
+        date: dateKey,
+        description: div.description,
+        hasROC: div.hasROC,
+        transactionID: div.transactionID,
+        ...calc,
+      });
+    }
+    for (const lot of acc.classified.trades) {
+      const currency = lot.currency || 'USD';
+      const closeDateKey = lot.tradeDateISO;
+      const openDateKey = lot.openDateTimeISO;
+      const openRate = effectiveRate(rateMap, currency, openDateKey);
+      const closeRate = effectiveRate(rateMap, currency, closeDateKey);
+      const calc = calcCapitalGain(lot, openRate, closeRate);
+      tradesOut.push({
+        accountId: acc.accountId,
+        symbol: lot.symbol,
+        currency,
+        buySell: lot.buySell,
+        openDate: openDateKey,
+        closeDate: closeDateKey,
+        description: lot.description,
+        transactionID: lot.transactionID,
+        exchange: lot.exchange,
+        ...calc,
+      });
+    }
+  }
+  return { dividends: dividendsOut, trades: tradesOut };
+}
+
+/**
+ * Агрегати для дашборду.
+ * Інвестприбуток: податок = max(0, netPnL − priorLoss) × 23%
+ */
+function buildAggregates(calc, settings) {
+  const reportYear = settings?.reportYear;
+  const inYear = (iso) => !iso || !reportYear || iso.slice(0, 4) === String(reportYear);
+
+  const divs = calc.dividends.filter((d) => inYear(d.date));
+  const trades = calc.trades.filter((t) => inYear(t.closeDate));
+
+  const tradesPnlUSD_val = trades.reduce((s, t) => s + t.pnlUSD, 0);
+  const tradesPnlUAH_val = trades.reduce((s, t) => s + t.pnlUAH, 0);
+  const tradesProfitUAH_val = trades.filter(t => t.pnlUAH > 0).reduce((s, t) => s + t.pnlUAH, 0);
+  const tradesLossUAH_val = trades.filter(t => t.pnlUAH < 0).reduce((s, t) => s + t.pnlUAH, 0);
+  const priorLoss = Math.max(0, settings?.priorLossUAH || 0);
+  const taxableBaseUAH = Math.max(0, tradesPnlUAH_val - priorLoss);
+  const tradesPdfoUAH_val = taxableBaseUAH * UA_TAX_RATES.capitalGains.pdfo;
+  // ВЗ за роком звіту: 1.5% для 2024 і раніше, 5% для 2025+
+  const tradesVzRate = getVzRateForYear(reportYear);
+  const tradesVzUAH_val = taxableBaseUAH * tradesVzRate;
+  const tradesTaxUAH_val = tradesPdfoUAH_val + tradesVzUAH_val;
+  const lossCarryForwardUAH = tradesPnlUAH_val < 0 ? Math.abs(tradesPnlUAH_val) : 0;
+  const priorLossUsedUAH = tradesPnlUAH_val > 0 ? Math.min(priorLoss, tradesPnlUAH_val) : 0;
+  const priorLossRemainingUAH = Math.max(0, priorLoss - priorLossUsedUAH);
+
+  // Чи є в звітному періоді дивіденди до зміни ставки ВЗ і після
+  const divsOldVz = divs.filter(d => d.vzRate === VZ_RATE_OLD);
+  const divsNewVz = divs.filter(d => d.vzRate === VZ_RATE_NEW);
+  const dividendsVzMixed = divsOldVz.length > 0 && divsNewVz.length > 0;
+  const dividendsVzRate = divsOldVz.length > divsNewVz.length ? VZ_RATE_OLD : VZ_RATE_NEW;
+
+  const totals = {
+    grossDividendsUSD: divs.reduce((s, d) => s + d.grossUSD, 0),
+    grossDividendsUAH: divs.reduce((s, d) => s + d.grossUAH, 0),
+    baseDividendsUAH: divs.reduce((s, d) => s + d.baseUAH, 0),
+    usWhtUSD: divs.reduce((s, d) => s + d.usWhtUSD, 0),
+    usWhtUAH: divs.reduce((s, d) => s + d.usWhtUAH, 0),
+    dividendsPdfoUAH: divs.reduce((s, d) => s + d.pdfoToPayUAH, 0),
+    dividendsVzUAH: divs.reduce((s, d) => s + d.vzToPayUAH, 0),
+    dividendsVzRate,                           // переважаюча ставка (для лейблу)
+    dividendsVzMixed,                          // чи змішаний період
+    dividendsVzOldUAH: divsOldVz.reduce((s, d) => s + d.vzToPayUAH, 0),
+    dividendsVzNewUAH: divsNewVz.reduce((s, d) => s + d.vzToPayUAH, 0),
+    dividendsTaxUAH: divs.reduce((s, d) => s + d.totalTaxUAH, 0),
+    dividendsNetUAH: divs.reduce((s, d) => s + d.netReceivedUAH, 0),
+
+    tradesPnlUSD: tradesPnlUSD_val,
+    tradesPnlUAH: tradesPnlUAH_val,
+    tradesProfitUAH: tradesProfitUAH_val,
+    tradesLossUAH: tradesLossUAH_val,
+    taxableBaseUAH,
+    priorLossUsedUAH,
+    priorLossRemainingUAH,
+    lossCarryForwardUAH,
+    tradesPdfoUAH: tradesPdfoUAH_val,
+    tradesVzUAH: tradesVzUAH_val,
+    tradesVzRate,                              // 0.015 або 0.05 — для відображення в UI
+    tradesTaxUAH: tradesTaxUAH_val,
+  };
+  totals.totalTaxUAH = totals.dividendsTaxUAH + totals.tradesTaxUAH;
+
+  // By-account
+  const byAccount = {};
+  divs.forEach((d) => {
+    if (!byAccount[d.accountId]) byAccount[d.accountId] = { account: d.accountId, divGross: 0, divTax: 0, tradePnl: 0 };
+    byAccount[d.accountId].divGross += d.grossUAH;
+    byAccount[d.accountId].divTax += d.totalTaxUAH;
+  });
+  trades.forEach((t) => {
+    if (!byAccount[t.accountId]) byAccount[t.accountId] = { account: t.accountId, divGross: 0, divTax: 0, tradePnl: 0 };
+    byAccount[t.accountId].tradePnl += t.pnlUAH;
+  });
+
+  // By symbol
+  const divBySymbol = {};
+  divs.forEach((d) => {
+    if (!divBySymbol[d.symbol]) divBySymbol[d.symbol] = {
+      symbol: d.symbol, grossUAH: 0, grossCurrency: 0, currency: d.currency || 'USD', taxUAH: 0, netUAH: 0, count: 0
+    };
+    divBySymbol[d.symbol].grossUAH += d.grossUAH;
+    divBySymbol[d.symbol].grossCurrency += d.grossUSD;
+    divBySymbol[d.symbol].taxUAH += d.totalTaxUAH;
+    divBySymbol[d.symbol].netUAH += d.netReceivedUAH;
+    divBySymbol[d.symbol].count += 1;
+  });
+  const tradesBySymbol = {};
+  trades.forEach((t) => {
+    if (!tradesBySymbol[t.symbol]) tradesBySymbol[t.symbol] = {
+      symbol: t.symbol, pnlUAH: 0, pnlCurrency: 0,
+      costUAH: 0, costCurrency: 0,
+      currency: t.currency || 'USD', count: 0
+    };
+    tradesBySymbol[t.symbol].pnlUAH += t.pnlUAH;
+    tradesBySymbol[t.symbol].pnlCurrency += t.pnlUSD;
+    tradesBySymbol[t.symbol].costUAH += t.costBasisUAH;
+    tradesBySymbol[t.symbol].costCurrency += t.costUSD;
+    tradesBySymbol[t.symbol].count += 1;
+  });
+
+  // By currency (для KPI розбивки, tooltip'ів та Підсумку)
+  const divByCurrency = {};
+  divs.forEach((d) => {
+    const c = d.currency || 'USD';
+    if (!divByCurrency[c]) divByCurrency[c] = {
+      currency: c, grossCurrency: 0, grossUAH: 0,
+      whtCurrency: 0, whtUAH: 0,
+      rocCurrency: 0, rocUAH: 0,
+      netCurrency: 0, netUAH: 0,
+      count: 0
+    };
+    divByCurrency[c].grossCurrency += d.grossUSD;
+    divByCurrency[c].grossUAH += d.grossUAH;
+    divByCurrency[c].whtCurrency += (d.whtGrossUSD || 0);
+    divByCurrency[c].whtUAH += (d.whtGrossUAH || 0);
+    divByCurrency[c].rocCurrency += (d.rocReceivedUSD || 0);
+    divByCurrency[c].rocUAH += (d.rocReceivedUAH || 0);
+    // Net cur = Gross − повне WHT + ROC (фактично отримано у валюті на рахунок)
+    divByCurrency[c].netCurrency += (d.grossUSD - (d.whtGrossUSD || 0) + (d.rocReceivedUSD || 0));
+    divByCurrency[c].netUAH += (d.grossUAH - (d.whtGrossUAH || 0) + (d.rocReceivedUAH || 0));
+    divByCurrency[c].count += 1;
+  });
+  const tradesByCurrency = {};
+  trades.forEach((t) => {
+    const c = t.currency || 'USD';
+    if (!tradesByCurrency[c]) tradesByCurrency[c] = {
+      currency: c, pnlCurrency: 0, pnlUAH: 0,
+      costCurrency: 0, costUAH: 0,
+      count: 0
+    };
+    tradesByCurrency[c].pnlCurrency += t.pnlUSD;
+    tradesByCurrency[c].pnlUAH += t.pnlUAH;
+    tradesByCurrency[c].costCurrency += t.costUSD;
+    tradesByCurrency[c].costUAH += t.costBasisUAH;
+    tradesByCurrency[c].count += 1;
+  });
+
+  // Monthly (з сумою у валюті для tooltip)
+  const monthly = {};
+  divs.forEach((d) => {
+    const ym = d.date.slice(0, 7);
+    if (!monthly[ym]) monthly[ym] = { month: ym, grossUAH: 0, grossUSD: 0, taxUAH: 0 };
+    monthly[ym].grossUAH += d.grossUAH;
+    monthly[ym].grossUSD += d.grossUSD;
+    monthly[ym].taxUAH += d.totalTaxUAH;
+  });
+  const monthlyArr = Object.values(monthly).sort((a, b) => a.month.localeCompare(b.month));
+
+  return {
+    totals,
+    byAccount: Object.values(byAccount),
+    divBySymbol: Object.values(divBySymbol).sort((a, b) => b.grossUAH - a.grossUAH),
+    tradesBySymbol: Object.values(tradesBySymbol).sort((a, b) => Math.abs(b.pnlUAH) - Math.abs(a.pnlUAH)),
+    divByCurrency: Object.values(divByCurrency),
+    tradesByCurrency: Object.values(tradesByCurrency),
+    monthly: monthlyArr,
+    reportYear,
+    divs, trades,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: FORMATTERS
+// ═══════════════════════════════════════════════════════════
+
+function fmtNum(v, dec = 2) {
+  if (v == null || Number.isNaN(v)) return '—';
+  const abs = Math.abs(v);
+  const parts = abs.toFixed(dec).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const s = parts.join(',');
+  return v < 0 ? '−' + s : s;
+}
+function fmtUAH(v, dec = 2) { return v == null ? '—' : `${fmtNum(v, dec)} ₴`; }
+function fmtUSD(v, dec = 2) { return v == null ? '—' : `$${fmtNum(v, dec)}`; }
+function fmtCur(v, currency = 'USD', dec = 2) {
+  if (v == null) return '—';
+  const symbols = { USD: '$', EUR: '€', GBP: '£', CHF: 'Fr', PLN: 'zł' };
+  const sym = symbols[currency] || '';
+  const num = fmtNum(v, dec);
+  return sym ? `${sym}${num.startsWith('−') ? num.replace('−', '−') : num}` : `${num} ${currency}`;
+}
+
+/**
+ * Будує дані для графіка курсів: масив об'єктів { date, USD, EUR, ... }
+ * на кожен день у діапазоні (walk-back для вихідних/свят).
+ */
+function buildRateChartData(rateMap, currencies, startISO, endISO) {
+  if (!rateMap || !startISO || !endISO || !currencies || currencies.length === 0) return [];
+  const result = [];
+  const d = new Date(startISO + 'T12:00:00Z');
+  const end = new Date(endISO + 'T12:00:00Z');
+  // Кількість точок — по робочих днях (щоб не було "ступінчастих" ліній на вих-дні)
+  while (d <= end) {
+    const dayOfWeek = d.getUTCDay();
+    // 0=Sunday, 6=Saturday — пропускаємо вихідні (курс НБУ не оновлюється)
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      const iso = d.toISOString().slice(0, 10);
+      const row = { date: iso };
+      let anyValue = false;
+      currencies.forEach((c) => {
+        const rate = effectiveRate(rateMap, c, iso);
+        if (rate != null) { row[c] = rate; anyValue = true; }
+      });
+      if (anyValue) result.push(row);
+    }
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return result;
+}
+
+function fmtVzRate(rate) {
+  // 0.015 → "1,5%", 0.05 → "5%"
+  return rate === VZ_RATE_OLD ? '1,5%' : '5%';
+}
+
+function fmtDateDDMMYYYY(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  if (!y || !m || !d) return iso;
+  return `${d}.${m}.${y}`;
+}
+
+function fmtDateDDMMYY(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  if (!y || !m || !d) return iso;
+  return `${d}.${m}.${y.slice(2)}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: UI_SHARED (reusable components)
+// ═══════════════════════════════════════════════════════════
+
+function TabButton({ active, onClick, children, badge }) {
+  return h('button', {
+    onClick,
+    className: 'relative px-4 py-2 text-sm font-medium rounded-lg transition-all',
+    style: {
+      background: active ? 'var(--bg-panel-2)' : 'transparent',
+      color: active ? 'var(--text-primary)' : 'var(--text-tertiary)',
+    },
+    onMouseEnter: (e) => { if (!active) { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-panel-2)'; } },
+    onMouseLeave: (e) => { if (!active) { e.currentTarget.style.color = 'var(--text-tertiary)'; e.currentTarget.style.background = 'transparent'; } },
+  },
+    children,
+    badge != null && h('span', {
+      className: 'ml-2 text-[10px] px-1.5 py-0.5 rounded-md',
+      style: {
+        background: active ? 'var(--accent-bg)' : 'var(--bg-panel-3)',
+        color: active ? 'var(--accent)' : 'var(--text-tertiary)',
+      }
+    }, badge)
+  );
+}
+
+function KPI({ label, value, sub, tone = 'neutral' }) {
+  const toneColor = {
+    neutral: 'var(--text-primary)',
+    positive: 'var(--pos-soft)',
+    negative: 'var(--neg-soft)',
+    accent: 'var(--accent)',
+    warn: 'var(--warn)',
+  }[tone];
+  return h('div', { className: 'card card-hover p-5' },
+    h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-2' }, label),
+    h('div', {
+      className: 'text-2xl font-mono font-medium num-animate',
+      style: { color: toneColor }
+    }, value),
+    sub && h('div', { className: 't-text-tertiary text-xs mt-1.5' }, sub)
+  );
+}
+
+function ThemeToggle({ theme, setTheme }) {
+  const toggle = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+  return h('button', {
+    onClick: toggle,
+    className: 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors',
+    style: {
+      background: 'var(--bg-panel-2)',
+      border: '1px solid var(--border-subtle)',
+      color: 'var(--text-secondary)',
+    },
+    onMouseEnter: (e) => { e.currentTarget.style.color = 'var(--text-primary)'; },
+    onMouseLeave: (e) => { e.currentTarget.style.color = 'var(--text-secondary)'; },
+    title: 'Перемкнути тему'
+  },
+    theme === 'dark'
+      ? h('span', null, '☀ Light')
+      : h('span', null, '☾ Dark')
+  );
+}
+
+// Upload SVG icon
+function UploadIcon() {
+  return h('svg', {
+    width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none',
+    stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round',
+    style: { margin: '0 auto', opacity: 0.7 }
+  },
+    h('path', { d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' }),
+    h('polyline', { points: '17 8 12 3 7 8' }),
+    h('line', { x1: 12, y1: 3, x2: 12, y2: 15 })
+  );
+}
+
+// Check icon for success messages
+function CheckIcon() {
+  return h('svg', {
+    width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none',
+    stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round',
+    style: { margin: '0 auto' }
+  },
+    h('circle', { cx: 12, cy: 12, r: 10 }),
+    h('polyline', { points: '9 12 12 15 16 9' })
+  );
+}
+
+// Info tooltip: круглий (?) з tooltip'ом на hover
+function InfoTooltip({ text, width = 320 }) {
+  return h('span', {
+    style: {
+      position: 'relative',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 16,
+      height: 16,
+      borderRadius: '50%',
+      background: 'var(--bg-panel-3)',
+      color: 'var(--text-tertiary)',
+      fontSize: 10,
+      fontWeight: 600,
+      cursor: 'help',
+      userSelect: 'none',
+      border: '1px solid var(--border-subtle)',
+      marginLeft: 6,
+    },
+    className: 'info-tip',
+  },
+    '?',
+    h('span', {
+      className: 'info-tip-body',
+      style: {
+        position: 'absolute',
+        bottom: 'calc(100% + 8px)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width,
+        background: 'var(--tooltip-bg)',
+        color: 'var(--tooltip-text)',
+        border: '1px solid var(--tooltip-border)',
+        padding: '10px 12px',
+        borderRadius: 8,
+        fontSize: 12,
+        fontWeight: 400,
+        lineHeight: 1.5,
+        zIndex: 50,
+        opacity: 0,
+        pointerEvents: 'none',
+        transition: 'opacity 0.15s ease',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
+        textAlign: 'left',
+        whiteSpace: 'normal',
+      }
+    }, text)
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: TAB_UPLOAD
+// ═══════════════════════════════════════════════════════════
+
+function UploadTab({
+  onFileLoaded, parseError, xmlLoaded,
+  loadingStatus, loadingStatusKind,
+  onClearCache, settings, setSettings,
+  reportDateRange, reportYears,
+  cacheCoverage, reportCurrencies,
+}) {
+  const [dragActive, setDragActive] = useState(false);
+  const dragCounter = useRef(0);
+  const inputRef = useRef(null);
+
+  // Local state для priorLossUAH (текстовий інпут з валідацією)
+  const [priorLossInput, setPriorLossInput] = useState(
+    settings.priorLossUAH > 0 ? String(settings.priorLossUAH).replace('.', ',') : ''
+  );
+  const [priorLossErr, setPriorLossErr] = useState('');
+
+  const handleFiles = async (files) => {
+    if (!files || !files.length) return;
+    const file = files[0];
+    if (!file.name.toLowerCase().endsWith('.xml')) {
+      onFileLoaded(null, 'Це не XML файл. Потрібен .xml експорт з IBKR Flex Query.');
+      return;
+    }
+    try {
+      const text = await file.text();
+      onFileLoaded(text, null);
+    } catch (e) {
+      onFileLoaded(null, 'Не вдалося прочитати файл: ' + e.message);
+    }
+  };
+
+  const commitPriorLoss = () => {
+    const t = priorLossInput.trim().replace(/\s/g, '').replace(',', '.');
+    if (!t) {
+      setSettings({ ...settings, priorLossUAH: 0 });
+      setPriorLossErr('');
+      return;
+    }
+    const v = parseFloat(t);
+    if (Number.isNaN(v) || v < 0) {
+      setPriorLossErr('Введіть додатне число');
+      return;
+    }
+    setSettings({ ...settings, priorLossUAH: v });
+    setPriorLossErr('');
+  };
+
+  const successText = xmlLoaded && reportDateRange
+    ? `XML завантажено успішно. Дані з ${fmtDateDDMMYYYY(reportDateRange.from)} по ${fmtDateDDMMYYYY(reportDateRange.to)}`
+    : null;
+
+  const dropzoneClass = `dropzone cursor-pointer rounded-2xl p-12 text-center ${dragActive ? 'drop-active' : ''} ${xmlLoaded ? 'loaded' : ''}`;
+
+  // Cache coverage notes
+  const ccyForCache = Array.from(new Set(['USD', 'EUR', ...(reportCurrencies || []).filter((c) => c !== 'UAH')]));
+  const coverageNotes = ccyForCache.map((c) => {
+    const cov = cacheCoverage?.[c];
+    if (!cov) return { currency: c, status: 'none', text: 'не завантажено' };
+    const { min, max, count } = cov;
+    const coversReport = reportDateRange
+      && min <= reportDateRange.from && max >= reportDateRange.to;
+    return {
+      currency: c,
+      status: coversReport ? 'full' : 'partial',
+      text: `${count} днів · ${fmtDateDDMMYYYY(min)} — ${fmtDateDDMMYYYY(max)}${coversReport ? ' (покриває звіт)' : ''}`
+    };
+  });
+
+  return h('div', { className: 'max-w-4xl mx-auto space-y-6' },
+    h('div', {
+      onDragEnter: (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dragCounter.current += 1;
+        if (dragCounter.current === 1) setDragActive(true);
+      },
+      onDragOver:  (e) => { e.preventDefault(); e.stopPropagation(); },
+      onDragLeave: (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dragCounter.current -= 1;
+        if (dragCounter.current <= 0) { dragCounter.current = 0; setDragActive(false); }
+      },
+      onDrop:      (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dragCounter.current = 0;
+        setDragActive(false);
+        handleFiles(e.dataTransfer.files);
+      },
+      onClick: () => inputRef.current?.click(),
+      className: dropzoneClass
+    },
+      h('input', { ref: inputRef, type: 'file', accept: '.xml', className: 'hidden',
+        onChange: (e) => handleFiles(e.target.files) }),
+      h('div', { className: 'mb-4', style: { color: xmlLoaded ? 'var(--pos)' : 'var(--text-tertiary)' } },
+        xmlLoaded ? h(CheckIcon) : h(UploadIcon)
+      ),
+      xmlLoaded
+        ? h(React.Fragment, null,
+            h('div', { className: 'text-lg font-medium mb-2', style: { color: 'var(--pos)' } }, successText),
+            h('div', { className: 'text-sm t-text-tertiary' }, 'Перетягніть інший файл, щоб замінити')
+          )
+        : h(React.Fragment, null,
+            h('div', { className: 'text-lg font-medium mb-2' }, 'Перетягніть IBKR Flex Query XML сюди'),
+            h('div', { className: 'text-sm t-text-tertiary' },
+              'або ', h('span', { style: { color: 'var(--accent)', textDecoration: 'underline' } }, 'клікніть, щоб обрати файл')
+            )
+          )
+    ),
+
+    parseError && h('div', {
+      className: 'rounded-lg p-4 text-sm',
+      style: { background: 'var(--neg-bg)', color: 'var(--neg)', border: '1px solid var(--neg)' }
+    },
+      h('div', { className: 'font-medium mb-1' }, 'Помилка:'), parseError
+    ),
+
+    loadingStatus && h('div', {
+      className: 'rounded-lg p-4 text-sm font-mono',
+      style: {
+        background: loadingStatusKind === 'error' ? 'var(--neg-bg)' : 'var(--pos-bg)',
+        color: loadingStatusKind === 'error' ? 'var(--neg)' : 'var(--pos)',
+        border: `1px solid ${loadingStatusKind === 'error' ? 'var(--neg)' : 'var(--pos)'}`
+      }
+    }, loadingStatus),
+
+    h('div', { className: 'card p-6' },
+      h('h3', { className: 'text-sm font-semibold uppercase tracking-wider mb-4 t-text-secondary' }, 'Налаштування розрахунку'),
+      h('div', { className: 'space-y-5' },
+
+        // US WHT
+        h('div', null,
+          h('div', { className: 'text-sm font-medium mb-2 flex items-center' },
+            'Зарахування 15% US withholding tax',
+            h(InfoTooltip, {
+              text: h(React.Fragment, null,
+                h('div', { style: { fontWeight: 600, marginBottom: 4 } }, 'Що це?'),
+                h('div', { style: { marginBottom: 8 } },
+                  'США утримують 15% з дивідендів нерезидента (за формою W-8BEN). За Конвенцією про уникнення подвійного оподаткування ці 15% можна зарахувати як покриття українського ПДФО 9%.'),
+                h('div', { style: { fontWeight: 600, marginTop: 6, marginBottom: 2 } }, 'Консервативний:'),
+                h('div', null, 'Ігноруємо US WHT. Платимо повні 9%+5%=14% з gross в Україні. Найбезпечніший, документів не потрібно.'),
+                h('div', { style: { fontWeight: 600, marginTop: 6, marginBottom: 2 } }, 'Агресивний:'),
+                h('div', null, 'Зараховуємо US WHT — платимо тільки 5% ВЗ. Формально вимагає довідку 1042-S з легалізацією (п.13.5 ПКУ), яку на практиці важко отримати.')
+              )
+            })
+          ),
+          h('div', { className: 'grid grid-cols-2 gap-2' },
+            ['conservative', 'aggressive'].map((mode) =>
+              h('button', {
+                key: mode, onClick: () => setSettings({ ...settings, usWhtMode: mode }),
+                className: 'text-left p-3 rounded-lg transition-all text-sm',
+                style: {
+                  background: settings.usWhtMode === mode ? 'var(--accent-bg)' : 'var(--bg-panel-2)',
+                  border: '1px solid ' + (settings.usWhtMode === mode ? 'var(--accent)' : 'var(--border-subtle)'),
+                  color: settings.usWhtMode === mode ? 'var(--accent)' : 'var(--text-primary)',
+                }
+              },
+                h('div', { className: 'font-medium' }, mode === 'conservative' ? 'Консервативний' : 'Агресивний'),
+                h('div', { className: 'text-xs t-text-tertiary mt-0.5' },
+                  mode === 'conservative'
+                    ? 'Платити повні 9%+5% з gross, ігнорувати US WHT'
+                    : 'Зараховувати US WHT як покриття ПДФО, платити тільки 5% ВЗ')
+              )
+            )
+          )
+        ),
+
+        // Report year — DROPDOWN з років у XML
+        h('div', null,
+          h('div', { className: 'text-sm font-medium mb-2 flex items-center' },
+            'Звітний рік (для декларації)',
+            h(InfoTooltip, {
+              text: 'Опціонально. Якщо в звіті операції за кілька років — обери один для фільтрації. Залиш порожнім, щоб рахувати всі дати.'
+            })
+          ),
+          reportYears && reportYears.length > 0
+            ? h('select', {
+                value: settings.reportYear || '',
+                onChange: (e) => {
+                  const v = e.target.value;
+                  setSettings({ ...settings, reportYear: v ? parseInt(v, 10) : null });
+                },
+                style: { minWidth: 200 }
+              },
+                h('option', { value: '' }, 'Усі дати'),
+                reportYears.map((y) => h('option', { key: y, value: y }, y))
+              )
+            : h('div', { className: 't-text-tertiary text-xs' }, 'Завантажте XML, щоб побачити доступні роки')
+        ),
+
+        // Prior-year losses — ТЕКСТОВИЙ input без стрілок
+        h('div', null,
+          h('div', { className: 'text-sm font-medium mb-2 flex items-center' },
+            'Врахувати збитки минулих періодів (₴)',
+            h(InfoTooltip, {
+              text: 'Сума раніше задекларованого інвестиційного збитку (у гривнях), який можна застосувати до поточного прибутку (п.170.2.6 ПКУ). Вводиться вже у UAH — має бути перерахований на дату декларування. Застосовується ТІЛЬКИ до інвестприбутку, не до дивідендів.'
+            })
+          ),
+          h('input', {
+            type: 'text', inputMode: 'decimal',
+            value: priorLossInput,
+            onChange: (e) => setPriorLossInput(e.target.value),
+            onBlur: commitPriorLoss,
+            onKeyDown: (e) => e.key === 'Enter' && commitPriorLoss(),
+            placeholder: '0',
+            style: { width: 280 }
+          }),
+          priorLossErr && h('div', { className: 'text-xs mt-1', style: { color: 'var(--neg)' } }, priorLossErr)
+        ),
+
+        // ВЗ info
+        h('div', {
+          className: 'p-3 rounded-lg text-xs',
+          style: { background: 'var(--bg-panel-2)', border: '1px solid var(--border-subtle)' }
+        },
+          h('div', { className: 'font-medium t-text-primary mb-1' }, 'ℹ Ставка військового збору'),
+          h('div', { className: 't-text-secondary' },
+            'Для доходів по ',
+            h('span', { style: { fontWeight: 600 } }, '31.12.2024'),
+            ' включно застосовується ставка ',
+            h('span', { style: { fontWeight: 600, color: 'var(--accent)' } }, '1,5%'),
+            '. Для доходів, отриманих з ',
+            h('span', { style: { fontWeight: 600 } }, '01.01.2025'),
+            ' — ',
+            h('span', { style: { fontWeight: 600, color: 'var(--accent)' } }, '5%'),
+            '. Ставка визначається автоматично за датою виплати дивіденду або за звітним роком для капгейну.'
+          )
+        ),
+
+        // Cache status
+        h('div', { className: 'pt-4', style: { borderTop: '1px solid var(--border-subtle)' } },
+          h('div', { className: 'text-xs font-medium t-text-secondary mb-2' }, 'Кеш курсів НБУ'),
+          h('div', { className: 'space-y-1 text-xs mb-3' },
+            coverageNotes.length === 0
+              ? h('div', { className: 't-text-muted' }, 'Кеш порожній')
+              : coverageNotes.map((n) =>
+                  h('div', { key: n.currency, className: 'flex items-center gap-2' },
+                    h('span', {
+                      className: 'w-12 font-mono font-medium',
+                      style: {
+                        color: n.status === 'full' ? 'var(--pos)'
+                          : n.status === 'partial' ? 'var(--warn)'
+                          : 'var(--text-muted)'
+                      }
+                    }, n.currency),
+                    h('span', { className: 't-text-tertiary' }, n.text)
+                  )
+                )
+          ),
+          h('button', {
+            onClick: onClearCache,
+            className: 'text-xs t-text-tertiary underline',
+            onMouseEnter: (e) => { e.currentTarget.style.color = 'var(--text-primary)'; },
+            onMouseLeave: (e) => { e.currentTarget.style.color = 'var(--text-tertiary)'; },
+          }, 'Очистити кеш курсів НБУ')
+        )
+      )
+    ),
+
+    h('div', { className: 'card p-5 text-sm t-text-secondary space-y-2' },
+      h('div', { className: 'font-medium t-text-primary mb-2' }, 'Як це працює'),
+      h('div', null, '1. Закидаєш XML-експорт IBKR Flex Query'),
+      h('div', null, '2. Додаток підтягує курси НБУ одним запитом за увесь період (bulk API)'),
+      h('div', null, '3. Розраховує ПДФО 9%/18% і ВЗ з правильною ставкою (1.5% для доходів по 2024 рік, 5% з 2025 року)'),
+      h('div', null, '4. Курси кешуються локально — повторні запуски миттєві, без запитів'),
+      h('div', { className: 'pt-2 text-xs t-text-tertiary' },
+        'Усі дані залишаються в твоєму браузері. Запити ідуть лише до bank.gov.ua за курсами.')
+    )
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: TAB_DASHBOARD
+// ═══════════════════════════════════════════════════════════
+
+function DashboardTab({ agg, settings, rateMap, rateLoadRange }) {
+  if (!agg) return h('div', { className: 't-text-tertiary' }, 'Немає даних. Завантажте XML на вкладці Upload.');
+  const t = agg.totals;
+
+  // Валюти що є у звіті (для графіка курсів і KPI-розбивки)
+  const reportCurrencies = useMemo(() => {
+    const set = new Set();
+    agg.divs.forEach(d => d.currency && set.add(d.currency));
+    agg.trades.forEach(x => x.currency && set.add(x.currency));
+    set.delete('UAH');
+    return Array.from(set).sort();
+  }, [agg]);
+
+  // Стан: які валюти показані на графіку курсів
+  const [visibleCcy, setVisibleCcy] = useState(() => {
+    const init = {};
+    ['USD', 'EUR', ...reportCurrencies].forEach(c => { init[c] = true; });
+    return init;
+  });
+  const toggleCcy = (c) => setVisibleCcy(v => ({ ...v, [c]: !v[c] }));
+
+  const allCcy = Array.from(new Set(['USD', 'EUR', ...reportCurrencies]));
+  const activeCcy = allCcy.filter(c => visibleCcy[c]);
+
+  const rateChartData = useMemo(() => {
+    if (!rateMap || !rateLoadRange) return [];
+    return buildRateChartData(rateMap, allCcy, rateLoadRange.from, rateLoadRange.to);
+  }, [rateMap, rateLoadRange, reportCurrencies.join(',')]);
+
+  // Subtitle рядок
+  const subtitleParts = [
+    `Звітний рік: ${agg.reportYear || 'всі дати'}`,
+    `Режим: ${settings.usWhtMode === 'conservative' ? 'консервативний' : 'агресивний'}`,
+  ];
+  if (settings.priorLossUAH > 0) {
+    subtitleParts.push(`Враховано збитку минулих періодів: ${fmtUAH(settings.priorLossUAH, 0)}`);
+  }
+
+  // CustomTooltip для Monthly dividends chart (UAH + USD)
+  const MonthlyTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
+    const d = payload[0].payload;
+    return h('div', {
+      style: {
+        background: 'var(--tooltip-bg)', border: '1px solid var(--tooltip-border)',
+        color: 'var(--tooltip-text)', padding: '10px 14px', borderRadius: 8,
+        fontSize: 12, fontFamily: 'Inter, sans-serif',
+        boxShadow: '0 8px 30px rgba(0,0,0,0.3)', minWidth: 180,
+      }
+    },
+      h('div', { style: { fontWeight: 600, marginBottom: 8 } }, d.month),
+      h('div', { style: { fontFamily: 'JetBrains Mono, monospace', fontSize: 14, fontWeight: 600, color: 'var(--pos-soft)' } }, fmtUAH(d.grossUAH)),
+      h('div', { style: { fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 } }, fmtUSD(d.grossUSD)),
+      h('div', { style: { fontSize: 11, color: 'var(--text-tertiary)', marginTop: 6, paddingTop: 6, borderTop: '1px solid var(--border-subtle)' } },
+        'Податок: ', h('span', { style: { fontFamily: 'JetBrains Mono, monospace' } }, fmtUAH(d.taxUAH, 0)))
+    );
+  };
+
+  // CustomTooltip для pie дивідендів (UAH + валюта)
+  const DivPieTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
+    const d = payload[0].payload;
+    return h('div', {
+      style: {
+        background: 'var(--tooltip-bg)', border: '1px solid var(--tooltip-border)',
+        color: 'var(--tooltip-text)', padding: '10px 14px', borderRadius: 8,
+        fontSize: 12, boxShadow: '0 8px 30px rgba(0,0,0,0.3)', minWidth: 180,
+      }
+    },
+      h('div', { style: { fontWeight: 600, marginBottom: 8 } }, d.symbol,
+        h('span', { style: { color: 'var(--text-tertiary)', fontWeight: 400, marginLeft: 6 } }, `${d.count} виплат`)),
+      h('div', { style: { fontFamily: 'JetBrains Mono, monospace', fontSize: 14, fontWeight: 600 } }, fmtUAH(d.grossUAH)),
+      h('div', { style: { fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 } },
+        fmtCur(d.grossCurrency, d.currency || 'USD'))
+    );
+  };
+
+  // CustomTooltip для P&L по тикерах (UAH + валюта + %)
+  const PnlTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
+    const d = payload[0].payload;
+    const positive = d.pnlUAH >= 0;
+    const pctUAH = d.costUAH ? (d.pnlUAH / d.costUAH * 100) : 0;
+    const pctCur = d.costCurrency ? (d.pnlCurrency / d.costCurrency * 100) : 0;
+    return h('div', {
+      style: {
+        background: 'var(--tooltip-bg)', border: '1px solid var(--tooltip-border)',
+        color: 'var(--tooltip-text)', padding: '10px 14px', borderRadius: 8,
+        fontSize: 12, boxShadow: '0 8px 30px rgba(0,0,0,0.3)', minWidth: 220,
+      }
+    },
+      h('div', { style: { fontWeight: 600, marginBottom: 8 } }, d.symbol,
+        h('span', { style: { color: 'var(--text-tertiary)', fontWeight: 400, marginLeft: 6 } }, `${d.count} лотів`)),
+      h('div', {
+        style: {
+          fontFamily: 'JetBrains Mono, monospace', fontSize: 14, fontWeight: 600,
+          color: positive ? 'var(--pos-soft)' : 'var(--neg-soft)',
+          display: 'flex', justifyContent: 'space-between', gap: 12
+        }
+      },
+        h('span', null, (positive ? '+' : '') + fmtUAH(d.pnlUAH)),
+        h('span', { style: { fontSize: 12 } }, `${pctUAH >= 0 ? '+' : ''}${pctUAH.toFixed(2)}%`)
+      ),
+      h('div', {
+        style: {
+          fontFamily: 'JetBrains Mono, monospace', fontSize: 11,
+          color: 'var(--text-secondary)', marginTop: 4,
+          display: 'flex', justifyContent: 'space-between', gap: 12
+        }
+      },
+        h('span', null, (d.pnlCurrency >= 0 ? '+' : '') + fmtCur(d.pnlCurrency, d.currency || 'USD')),
+        h('span', null, `${pctCur >= 0 ? '+' : ''}${pctCur.toFixed(2)}%`)
+      )
+    );
+  };
+
+  // CustomTooltip для графіка курсів (дата + всі активні валюти)
+  const RateChartTooltip = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) return null;
+    return h('div', {
+      style: {
+        background: 'var(--tooltip-bg)', border: '1px solid var(--tooltip-border)',
+        color: 'var(--tooltip-text)', padding: '10px 14px', borderRadius: 8,
+        fontSize: 12, boxShadow: '0 8px 30px rgba(0,0,0,0.3)', minWidth: 160,
+      }
+    },
+      h('div', { style: { fontWeight: 600, marginBottom: 6 } }, fmtDateDDMMYYYY(label)),
+      payload.map((p, i) =>
+        h('div', { key: i, style: { display: 'flex', justifyContent: 'space-between', gap: 12, fontFamily: 'JetBrains Mono, monospace' } },
+          h('span', { style: { color: p.color } }, p.name, ':'),
+          h('span', null, fmtNum(p.value, 4), ' ₴')
+        )
+      )
+    );
+  };
+
+  // NET result для info-рядка
+  const netUAH = t.dividendsNetUAH + (t.tradesPnlUAH > 0 ? t.tradesPnlUAH - t.tradesTaxUAH : t.tradesPnlUAH);
+  const netLabel = netUAH >= 0 ? 'Чистий дохід на руки' : 'Чистий збиток на руки';
+
+  // currency breakdown renderer
+  const renderCcyBreakdown = (breakdown, signed = false) => {
+    if (!breakdown || breakdown.length <= 1) return null;
+    return h('div', {
+      className: 'mt-2 pt-2 space-y-0.5',
+      style: { borderTop: '1px solid var(--border-subtle)' }
+    },
+      breakdown.map((cb, i) => {
+        const v = signed ? cb.pnlCurrency : cb.grossCurrency;
+        return h('div', { key: i, className: 'flex justify-between text-xs t-text-tertiary' },
+          h('span', null, cb.currency, ':'),
+          h('span', {
+            className: 'font-mono',
+            style: { color: v > 0 ? 'var(--pos)' : v < 0 ? 'var(--neg)' : 'var(--text-tertiary)' }
+          }, (signed && v > 0 ? '+' : '') + fmtCur(v, cb.currency))
+        );
+      })
+    );
+  };
+
+  return h('div', null,
+    h('div', { className: 'mb-6' },
+      h('h1', { className: 'text-2xl font-bold tracking-tight' }, 'Податковий дашборд'),
+      h('div', { className: 'text-sm t-text-tertiary mt-1' }, subtitleParts.join(' · '))
+    ),
+
+    // ROW 1: Дивіденди Gross | ПДФО 9% | ВЗ 5% (по 1/3)
+    h('div', { className: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-4' },
+      h('div', { className: 'card card-hover p-5' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-2' }, 'Дивіденди Gross (UAH)'),
+        h('div', { className: 'text-2xl font-mono font-medium num-animate', style: { color: 'var(--pos-soft)' } }, fmtUAH(t.grossDividendsUAH)),
+        h('div', { className: 't-text-tertiary text-xs mt-1.5' }, `${agg.divs.length} виплат`),
+        renderCcyBreakdown(agg.divByCurrency, false)
+      ),
+      h(KPI, {
+        label: 'ПДФО з дивідендів (9%)',
+        value: fmtUAH(t.dividendsPdfoUAH),
+        sub: settings.usWhtMode === 'aggressive' ? 'Після US WHT credit' : 'Без US credit',
+        tone: 'accent'
+      }),
+      h(KPI, {
+        label: `ВЗ з дивідендів (${t.dividendsVzMixed ? '1,5% + 5%' : fmtVzRate(t.dividendsVzRate)})`,
+        value: fmtUAH(t.dividendsVzUAH),
+        sub: t.dividendsVzMixed
+          ? `${fmtUAH(t.dividendsVzOldUAH, 0)} (1,5%) + ${fmtUAH(t.dividendsVzNewUAH, 0)} (5%)`
+          : 'Сплачується повністю',
+        tone: 'accent'
+      })
+    ),
+
+    // ROW 2: Інвестприбуток | ПДФО 18% | ВЗ 5% (по 1/3)
+    h('div', { className: 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-4' },
+      h('div', { className: 'card card-hover p-5' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-2' }, 'Інвестприбуток (UAH)'),
+        h('div', {
+          className: 'text-2xl font-mono font-medium num-animate',
+          style: { color: t.tradesPnlUAH >= 0 ? 'var(--pos-soft)' : 'var(--neg-soft)' }
+        }, fmtUAH(t.tradesPnlUAH)),
+        h('div', { className: 't-text-tertiary text-xs mt-1.5' }, `${agg.trades.length} лотів`),
+        renderCcyBreakdown(agg.tradesByCurrency, true)
+      ),
+      h(KPI, {
+        label: 'ПДФО з прибутку (18%)',
+        value: fmtUAH(t.tradesPdfoUAH),
+        sub: t.priorLossUsedUAH > 0
+          ? `Використано збитків: ${fmtUAH(t.priorLossUsedUAH, 0)}`
+          : (t.tradesPnlUAH < 0 ? 'Збиток — податок 0' : 'З NET прибутку'),
+        tone: 'accent'
+      }),
+      h(KPI, {
+        label: `ВЗ з прибутку (${fmtVzRate(t.tradesVzRate)})`,
+        value: fmtUAH(t.tradesVzUAH),
+        sub: t.tradesPnlUAH < 0 ? 'Збиток — податок 0' : 'З NET прибутку',
+        tone: 'accent'
+      })
+    ),
+
+    // ROW 3: Net (інформативна, 50%) | Tax (50%)
+    h('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4 mb-6' },
+      h(KPI, {
+        label: netLabel,
+        value: fmtUAH(netUAH),
+        sub: 'Дивіденди після податків + P&L',
+        tone: netUAH >= 0 ? 'positive' : 'negative'
+      }),
+      h(KPI, {
+        label: 'Податок до сплати',
+        value: fmtUAH(t.totalTaxUAH),
+        sub: `ПДФО ${fmtUAH(t.dividendsPdfoUAH + t.tradesPdfoUAH, 0)} + ВЗ ${fmtUAH(t.dividendsVzUAH + t.tradesVzUAH, 0)}`,
+        tone: 'warn'
+      })
+    ),
+
+    // Loss carryforward notice
+    (settings.priorLossUAH > 0 || t.lossCarryForwardUAH > 0) &&
+      h('div', {
+        className: 'card p-4 mb-6 text-sm',
+        style: { background: 'var(--accent-bg)', borderColor: 'var(--accent)' }
+      },
+        settings.priorLossUAH > 0 && h('div', null,
+          h('span', { className: 'font-medium', style: { color: 'var(--accent)' } }, 'Збитки минулих періодів: '),
+          h('span', { className: 'font-mono' }, fmtUAH(settings.priorLossUAH)),
+          ' · використано: ',
+          h('span', { className: 'font-mono', style: { color: 'var(--pos)' } }, fmtUAH(t.priorLossUsedUAH)),
+          ' · залишок: ',
+          h('span', { className: 'font-mono' }, fmtUAH(t.priorLossRemainingUAH))
+        ),
+        t.lossCarryForwardUAH > 0 && h('div', { className: 'mt-1' },
+          h('span', { className: 'font-medium', style: { color: 'var(--accent)' } }, 'Збиток поточного року: '),
+          h('span', { className: 'font-mono' }, fmtUAH(t.lossCarryForwardUAH)),
+          ' — переноситься на наступний рік'
+        )
+      ),
+
+    // Charts row 1: Monthly dividends + Dividends pie
+    h('div', { className: 'grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4' },
+      h('div', { className: 'lg:col-span-2 card p-5' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-4' }, 'Дивіденди по місяцях (UAH)'),
+        agg.monthly.length === 0
+          ? h('div', { className: 't-text-tertiary text-sm py-8 text-center' }, 'Немає даних')
+          : h(ResponsiveContainer, { width: '100%', height: 260 },
+              h(BarChart, { data: agg.monthly, margin: { top: 5, right: 10, left: 0, bottom: 5 } },
+                h(CartesianGrid, { strokeDasharray: '3 3', stroke: 'var(--border-subtle)', vertical: false }),
+                h(XAxis, { dataKey: 'month', stroke: 'var(--text-tertiary)', fontSize: 11 }),
+                h(YAxis, { stroke: 'var(--text-tertiary)', fontSize: 11,
+                  tickFormatter: (v) => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v }),
+                h(Tooltip, { content: h(MonthlyTooltip), cursor: { fill: 'var(--accent-bg)' } }),
+                h(Bar, { dataKey: 'grossUAH', fill: 'var(--accent)', name: 'Gross', radius: [4, 4, 0, 0] })
+              )
+            )
+      ),
+      h('div', { className: 'card p-5' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-4' }, 'Структура дивідендів'),
+        agg.divBySymbol.length === 0
+          ? h('div', { className: 't-text-tertiary text-sm py-8 text-center' }, 'Немає даних')
+          : h(ResponsiveContainer, { width: '100%', height: 260 },
+              h(PieChart, null,
+                h(Pie, {
+                  data: agg.divBySymbol, dataKey: 'grossUAH', nameKey: 'symbol',
+                  innerRadius: 50, outerRadius: 95, paddingAngle: 2,
+                  label: ({ symbol, percent }) => percent > 0.05 ? symbol : '',
+                  labelLine: false, fontSize: 10,
+                  stroke: 'var(--bg-panel)', strokeWidth: 2
+                },
+                  agg.divBySymbol.map((_, i) => h(Cell, { key: i, fill: CHART_COLORS[i % CHART_COLORS.length] }))
+                ),
+                h(Tooltip, { content: h(DivPieTooltip) })
+              )
+            )
+      )
+    ),
+
+    // Charts row 2: Accounts + P&L by symbol
+    h('div', { className: 'grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4' },
+      h('div', { className: 'card p-5' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-4' }, 'По акаунтах'),
+        h('div', { className: 'space-y-3' },
+          agg.byAccount.map((a) =>
+            h('div', { key: a.account, className: 'flex items-center justify-between py-2',
+              style: { borderBottom: '1px solid var(--border-subtle)' } },
+              h('div', null,
+                h('div', { className: 'text-sm font-medium' }, a.account),
+                h('div', { className: 't-text-tertiary text-xs mt-0.5' },
+                  `Дивіденди: ${fmtUAH(a.divGross, 0)}`,
+                  a.tradePnl !== 0 ? h('span', null, ' · P&L: ',
+                    h('span', { style: { color: a.tradePnl >= 0 ? 'var(--pos)' : 'var(--neg)' } }, fmtUAH(a.tradePnl, 0))
+                  ) : null
+                )
+              ),
+              h('div', { className: 'text-right' },
+                h('div', { className: 'text-sm font-mono', style: { color: 'var(--warn)' } }, fmtUAH(a.divTax, 0)),
+                h('div', { className: 't-text-tertiary text-xs' }, 'податок з div')
+              )
+            )
+          )
+        )
+      ),
+      h('div', { className: 'card p-5' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary mb-4' }, 'P&L по тикерах'),
+        agg.tradesBySymbol.length === 0
+          ? h('div', { className: 't-text-tertiary text-sm py-8 text-center' }, 'Немає угод у цьому періоді')
+          : h(ResponsiveContainer, { width: '100%', height: 240 },
+              h(BarChart, { data: agg.tradesBySymbol, layout: 'vertical', margin: { top: 5, right: 10, left: 40, bottom: 5 } },
+                h(CartesianGrid, { strokeDasharray: '3 3', stroke: 'var(--border-subtle)', horizontal: false }),
+                h(XAxis, { type: 'number', stroke: 'var(--text-tertiary)', fontSize: 11 }),
+                h(YAxis, { type: 'category', dataKey: 'symbol', stroke: 'var(--text-tertiary)', fontSize: 11 }),
+                h(ReferenceLine, { x: 0, stroke: 'var(--border-strong)' }),
+                h(Tooltip, { content: h(PnlTooltip), cursor: { fill: 'var(--accent-bg)' } }),
+                h(Bar, { dataKey: 'pnlUAH', name: 'P&L UAH', radius: [0, 4, 4, 0] },
+                  agg.tradesBySymbol.map((d, i) =>
+                    h(Cell, { key: i, fill: d.pnlUAH >= 0 ? 'var(--pos)' : 'var(--neg)' })
+                  )
+                )
+              )
+            )
+      )
+    ),
+
+    // Charts row 3: Курс валют (повна ширина)
+    h('div', { className: 'card p-5 mb-6' },
+      h('div', { className: 'flex items-center justify-between mb-4 flex-wrap gap-3' },
+        h('div', { className: 'text-[11px] uppercase tracking-wider t-text-tertiary' }, 'Курс валют'),
+        // Toggle для валют
+        h('div', { className: 'flex items-center gap-2 flex-wrap' },
+          allCcy.map((c, i) =>
+            h('button', {
+              key: c,
+              onClick: () => toggleCcy(c),
+              className: 'px-2.5 py-1 text-xs rounded-md font-mono transition-all',
+              style: {
+                background: visibleCcy[c] ? 'var(--accent-bg)' : 'var(--bg-panel-2)',
+                color: visibleCcy[c] ? CHART_COLORS[i % CHART_COLORS.length] : 'var(--text-muted)',
+                border: '1px solid ' + (visibleCcy[c] ? CHART_COLORS[i % CHART_COLORS.length] : 'var(--border-subtle)'),
+                opacity: visibleCcy[c] ? 1 : 0.55,
+              },
+              title: visibleCcy[c] ? `Приховати ${c}` : `Показати ${c}`
+            },
+              // Legend swatch
+              h('span', { style: {
+                display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
+                background: CHART_COLORS[i % CHART_COLORS.length],
+                marginRight: 6, verticalAlign: 'middle',
+                opacity: visibleCcy[c] ? 1 : 0.4
+              }}),
+              c
+            )
+          )
+        )
+      ),
+      rateChartData.length === 0 || activeCcy.length === 0
+        ? h('div', { className: 't-text-tertiary text-sm py-8 text-center' },
+            activeCcy.length === 0 ? 'Оберіть хоча б одну валюту для відображення' : 'Немає даних про курси')
+        : h(ResponsiveContainer, { width: '100%', height: 280 },
+            h(LineChart, { data: rateChartData, margin: { top: 5, right: 10, left: 0, bottom: 5 } },
+              h(CartesianGrid, { strokeDasharray: '3 3', stroke: 'var(--border-subtle)', vertical: false }),
+              h(XAxis, {
+                dataKey: 'date',
+                stroke: 'var(--text-tertiary)',
+                fontSize: 11,
+                tickFormatter: (v) => {
+                  const [y, m, d] = v.split('-');
+                  return `${d}.${m}`;
+                },
+                minTickGap: 30
+              }),
+              h(YAxis, {
+                stroke: 'var(--text-tertiary)',
+                fontSize: 11,
+                domain: ['auto', 'auto'],
+                tickFormatter: (v) => fmtNum(v, 2)
+              }),
+              h(Tooltip, { content: h(RateChartTooltip) }),
+              activeCcy.map((c) => {
+                const idx = allCcy.indexOf(c);
+                return h(Line, {
+                  key: c,
+                  type: 'monotone',
+                  dataKey: c,
+                  stroke: CHART_COLORS[idx % CHART_COLORS.length],
+                  strokeWidth: 2,
+                  dot: false,
+                  activeDot: { r: 4 },
+                  name: c,
+                  connectNulls: true
+                });
+              })
+            )
+          )
+    )
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: TAB_DIVIDENDS
+// ═══════════════════════════════════════════════════════════
+
+function DividendsTab({ agg }) {
+  const [filterAccount, setFilterAccount] = useState('all');
+  const [filterSymbol, setFilterSymbol] = useState('all');
+  const [filterROC, setFilterROC] = useState('all');
+  // Set з ключами згорнутих груп. За замовчуванням — всі згорнуті.
+  // useRef відстежує чи бачили цей набір ключів хоча б раз, щоб не скидати стан при кожному re-render.
+  const [collapsed, setCollapsed] = useState(() => new Set());
+  const [legendOpen, setLegendOpen] = useState(false);
+  const seenKeysRef = useRef(new Set());
+
+  if (!agg) return h('div', { className: 't-text-tertiary' }, 'Немає даних.');
+
+  const accounts = Array.from(new Set(agg.divs.map(d => d.accountId)));
+  const symbols = Array.from(new Set(agg.divs.map(d => d.symbol))).sort();
+
+  const filtered = agg.divs.filter(d => {
+    if (filterAccount !== 'all' && d.accountId !== filterAccount) return false;
+    if (filterSymbol !== 'all' && d.symbol !== filterSymbol) return false;
+    if (filterROC === 'rocOnly' && !d.hasROC) return false;
+    if (filterROC === 'noROC' && d.hasROC) return false;
+    return true;
+  });
+
+  const grouped = {};
+  filtered.forEach(d => {
+    const key = `${d.accountId}||${d.symbol}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(d);
+  });
+  const keys = Object.keys(grouped).sort();
+
+  // Нові групи (яких ще не бачили) — автоматично додаємо до collapsed
+  useEffect(() => {
+    const newlyCollapsed = [];
+    keys.forEach(k => {
+      if (!seenKeysRef.current.has(k)) {
+        seenKeysRef.current.add(k);
+        newlyCollapsed.push(k);
+      }
+    });
+    if (newlyCollapsed.length > 0) {
+      setCollapsed(prev => {
+        const next = new Set(prev);
+        newlyCollapsed.forEach(k => next.add(k));
+        return next;
+      });
+    }
+  }, [keys.join('|')]);
+
+  const toggleGroup = (key) => {
+    setCollapsed(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const totals = filtered.reduce((acc, d) => ({
+    gross: acc.gross + d.grossUAH, base: acc.base + d.baseUAH,
+    usWht: acc.usWht + d.usWhtUAH, pdfo: acc.pdfo + d.pdfoToPayUAH,
+    vz: acc.vz + d.vzToPayUAH, tax: acc.tax + d.totalTaxUAH, net: acc.net + d.netReceivedUAH,
+  }), { gross: 0, base: 0, usWht: 0, pdfo: 0, vz: 0, tax: 0, net: 0 });
+
+  const FilterBtn = ({ value, current, onClick, children }) =>
+    h('button', {
+      onClick: () => onClick(value),
+      className: 'px-2.5 py-1 text-xs rounded-md transition-all',
+      style: {
+        background: current === value ? 'var(--accent-bg)' : 'transparent',
+        color: current === value ? 'var(--accent)' : 'var(--text-tertiary)',
+      }
+    }, children);
+
+  return h('div', null,
+    h('div', { className: 'mb-5 flex items-center gap-6 flex-wrap' },
+      h('div', null,
+        h('span', { className: 'text-xs t-text-tertiary mr-2' }, 'Акаунт:'),
+        h('select', { value: filterAccount, onChange: (e) => setFilterAccount(e.target.value) },
+          h('option', { value: 'all' }, 'Всі'),
+          accounts.map(a => h('option', { key: a, value: a }, a))
+        )
+      ),
+      h('div', null,
+        h('span', { className: 'text-xs t-text-tertiary mr-2' }, 'Тикер:'),
+        h('select', { value: filterSymbol, onChange: (e) => setFilterSymbol(e.target.value), style: { fontFamily: 'JetBrains Mono, monospace' } },
+          h('option', { value: 'all' }, 'Всі'),
+          symbols.map(s => h('option', { key: s, value: s }, s))
+        )
+      ),
+      h('div', { className: 'flex items-center gap-1' },
+        h('span', { className: 'text-xs t-text-tertiary mr-1' }, 'ROC:'),
+        h(FilterBtn, { value: 'all', current: filterROC, onClick: setFilterROC }, 'Всі'),
+        h(FilterBtn, { value: 'rocOnly', current: filterROC, onClick: setFilterROC }, 'Тільки з ROC'),
+        h(FilterBtn, { value: 'noROC', current: filterROC, onClick: setFilterROC }, 'Без ROC'),
+      ),
+      h('button', {
+        onClick: () => {
+          const allCollapsed = keys.every(k => collapsed.has(k));
+          setCollapsed(allCollapsed ? new Set() : new Set(keys));
+        },
+        className: 'px-2.5 py-1 text-xs rounded-md transition-all',
+        style: {
+          background: 'var(--bg-panel-2)',
+          color: 'var(--text-secondary)',
+          border: '1px solid var(--border-subtle)',
+        },
+        onMouseEnter: (e) => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; },
+        onMouseLeave: (e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; },
+      },
+        keys.length > 0 && keys.every(k => collapsed.has(k)) ? '▼ Розгорнути все' : '▶ Згорнути все'
+      ),
+      h('div', { className: 'ml-auto text-xs t-text-tertiary' },
+        `${filtered.length} з ${agg.divs.length} дивідендів`)
+    ),
+
+    h('div', {
+      className: 'card',
+      style: {
+        maxHeight: '70vh',
+        overflow: 'auto',
+        position: 'relative',
+      }
+    },
+      h('table', { className: 'w-full text-xs', style: { borderCollapse: 'separate', borderSpacing: 0 } },
+        h('thead', null,
+          h('tr', null,
+            ['Акаунт', 'Тикер', 'Дата', 'Gross cur', 'WHT cur', 'ROC', 'Net cur',
+             'Курс', 'Gross ₴', 'ПДФО ₴', 'ВЗ ₴', 'Всього податку', 'Чистий дохід'].map((c, i) =>
+              h('th', { key: i,
+                className: `px-3 py-2.5 text-xs font-medium uppercase tracking-wider t-text-tertiary ${i >= 3 ? 'text-right' : 'text-left'}`,
+                style: {
+                  position: 'sticky',
+                  top: 0,
+                  zIndex: 10,
+                  background: 'var(--bg-table-header)',
+                  borderBottom: '1px solid var(--border)',
+                  whiteSpace: 'nowrap',
+                }
+              }, c)
+            )
+          )
+        ),
+        h('tbody', null,
+          keys.flatMap(key => {
+            const rows = grouped[key];
+            const [accId, sym] = key.split('||');
+            const subtot = rows.reduce((acc, d) => ({
+              gross: acc.gross + d.grossUAH, base: acc.base + d.baseUAH,
+              usWht: acc.usWht + d.usWhtUAH, pdfo: acc.pdfo + d.pdfoToPayUAH,
+              vz: acc.vz + d.vzToPayUAH, tax: acc.tax + d.totalTaxUAH, net: acc.net + d.netReceivedUAH,
+            }), { gross: 0, base: 0, usWht: 0, pdfo: 0, vz: 0, tax: 0, net: 0 });
+            const isCollapsed = collapsed.has(key);
+            return [
+              h('tr', { key: `h_${key}`, style: { borderBottom: '1px solid var(--border-subtle)' } },
+                h('td', {
+                  colSpan: 13,
+                  className: 'px-3 py-1.5 text-xs font-medium cursor-pointer select-none',
+                  style: { color: 'var(--accent)', background: 'var(--bg-group-header)' },
+                  onClick: () => toggleGroup(key)
+                },
+                  h('span', { style: { display: 'inline-block', width: 14, textAlign: 'center', fontSize: 9 } },
+                    isCollapsed ? '▶' : '▼'),
+                  `  ${accId}  •  ${sym}  `,
+                  h('span', { className: 't-text-tertiary' }, `(${rows.length} виплат)`)
+                )
+              ),
+              ...(isCollapsed ? [] : rows.map((d, i) => {
+                const cur = d.currency || 'USD';
+                const whtCur = d.whtGrossUSD || 0;            // повне утримання США
+                const rocCur = d.rocReceivedUSD || 0;         // повернення капіталу
+                const netCur = (d.grossUSD || 0) - whtCur + rocCur;  // фактично отримано cash
+                return h('tr', { key: `r_${key}_${i}_${d.transactionID || ''}`, className: 'data-row',
+                  style: { borderBottom: '1px solid var(--border-subtle)' } },
+                  h('td', { className: 'px-3 py-2 t-text-tertiary' }, d.accountId),
+                  h('td', { className: 'px-3 py-2 font-mono font-medium text-sm' }, d.symbol,
+                    d.hasROC && h('span', {
+                      className: 'ml-1.5 text-[9px] px-1 py-0.5 rounded',
+                      style: { background: 'var(--warn-bg)', color: 'var(--warn)' },
+                      title: `ROC реверсовано: ${fmtCur(d.rocReversedUSD, cur)}`
+                    }, 'ROC')
+                  ),
+                  h('td', { className: 'px-3 py-2 t-text-tertiary font-mono' }, fmtDateDDMMYY(d.date)),
+                  // Gross cur
+                  h('td', { className: 'px-3 py-2 text-right font-mono' }, fmtCur(d.grossUSD, cur)),
+                  // WHT cur
+                  h('td', { className: 'px-3 py-2 text-right font-mono', style: { color: 'var(--neg)' } },
+                    whtCur > 0 ? '−' + fmtCur(whtCur, cur) : '—'),
+                  // ROC
+                  h('td', { className: 'px-3 py-2 text-right font-mono', style: { color: 'var(--warn)' } },
+                    rocCur > 0 ? '+' + fmtCur(rocCur, cur) : '—'),
+                  // Net cur
+                  h('td', { className: 'px-3 py-2 text-right font-mono', style: { color: 'var(--pos)' } },
+                    fmtCur(netCur, cur)),
+                  // Курс
+                  h('td', { className: 'px-3 py-2 text-right font-mono t-text-tertiary' },
+                    d.rate ? fmtNum(d.rate, 4) : '—'),
+                  // Gross ₴
+                  h('td', { className: 'px-3 py-2 text-right font-mono t-text-tertiary' }, fmtUAH(d.grossUAH)),
+                  // ПДФО ₴
+                  h('td', { className: 'px-3 py-2 text-right font-mono' }, fmtUAH(d.pdfoToPayUAH)),
+                  // ВЗ ₴
+                  h('td', { className: 'px-3 py-2 text-right font-mono' }, fmtUAH(d.vzToPayUAH)),
+                  // Всього податку
+                  h('td', { className: 'px-3 py-2 text-right font-mono', style: { color: 'var(--warn)' } },
+                    fmtUAH(d.totalTaxUAH)),
+                  // Чистий дохід
+                  h('td', { className: 'px-3 py-2 text-right font-mono', style: { color: 'var(--pos)' } },
+                    fmtUAH(d.netReceivedUAH)),
+                );
+              })),
+              h('tr', { key: `s_${key}`, className: 'font-medium',
+                style: { borderBottom: '1px solid var(--border)', background: 'var(--bg-group-header)' } },
+                // Акаунт, Тикер, Дата → лейбл
+                h('td', { colSpan: 3, className: 'px-3 py-2 text-right text-xs t-text-secondary' }, `Разом по ${sym}:`),
+                // Gross cur
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm' },
+                  fmtCur(rows.reduce((s, r) => s + r.grossUSD, 0), rows[0]?.currency || 'USD')),
+                // WHT cur (повна сума утримання)
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm', style: { color: 'var(--neg)' } },
+                  (() => {
+                    const sw = rows.reduce((s, r) => s + (r.whtGrossUSD || 0), 0);
+                    return sw > 0 ? '−' + fmtCur(sw, rows[0]?.currency || 'USD') : '—';
+                  })()),
+                // ROC (повернення капіталу)
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm', style: { color: 'var(--warn)' } },
+                  (() => {
+                    const r = rows.reduce((s, x) => s + (x.rocReceivedUSD || 0), 0);
+                    return r > 0 ? '+' + fmtCur(r, rows[0]?.currency || 'USD') : '—';
+                  })()),
+                // Net cur = Gross − повне WHT + ROC
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm', style: { color: 'var(--pos)' } },
+                  fmtCur(rows.reduce((s, r) => s + r.grossUSD - (r.whtGrossUSD || 0) + (r.rocReceivedUSD || 0), 0), rows[0]?.currency || 'USD')),
+                // Курс — порожній
+                h('td'),
+                // Gross ₴
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm t-text-secondary' }, fmtUAH(subtot.gross)),
+                // ПДФО ₴
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm' }, fmtUAH(subtot.pdfo)),
+                // ВЗ ₴
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm' }, fmtUAH(subtot.vz)),
+                // Всього податку
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm', style: { color: 'var(--warn)' } }, fmtUAH(subtot.tax)),
+                // Чистий дохід
+                h('td', { className: 'px-3 py-2 text-right font-mono text-sm', style: { color: 'var(--pos)' } }, fmtUAH(subtot.net)),
+              )
+            ];
+          })
+        ),
+        h('tfoot', null,
+          h('tr', null,
+            // ВСЬОГО: лейбл охоплює Акаунт, Тикер, Дата, Gross cur, WHT cur, ROC, Net cur
+            h('td', {
+              colSpan: 7,
+              className: 'px-3 py-3 text-sm font-semibold text-right uppercase tracking-wider',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, 'ВСЬОГО (₴):'),
+            // Курс — порожнє
+            h('td', { style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' } }),
+            // Gross ₴
+            h('td', { className: 'px-3 py-3 text-right font-mono font-bold t-text-secondary',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, fmtUAH(totals.gross)),
+            // ПДФО ₴
+            h('td', { className: 'px-3 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, fmtUAH(totals.pdfo)),
+            // ВЗ ₴
+            h('td', { className: 'px-3 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, fmtUAH(totals.vz)),
+            // Всього податку
+            h('td', { className: 'px-3 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)', color: 'var(--warn)' }
+            }, fmtUAH(totals.tax)),
+            // Чистий дохід
+            h('td', { className: 'px-3 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)', color: 'var(--pos)' }
+            }, fmtUAH(totals.net)),
+          )
+        )
+      )
+    ),
+
+    // Легенда: пояснення колонок таблиці
+    h('div', { className: 'card mt-4', style: { overflow: 'hidden' } },
+      h('button', {
+        onClick: () => setLegendOpen(!legendOpen),
+        className: 'w-full px-4 py-3 flex items-center justify-between text-left',
+        style: {
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          color: 'var(--text-secondary)',
+        },
+        onMouseEnter: (e) => { e.currentTarget.style.background = 'var(--bg-panel-2)'; },
+        onMouseLeave: (e) => { e.currentTarget.style.background = 'transparent'; },
+      },
+        h('span', { className: 'text-sm font-medium flex items-center gap-2' },
+          h('span', { style: { fontSize: 11 } }, legendOpen ? '▼' : '▶'),
+          'ℹ Про колонки таблиці'
+        ),
+        h('span', { className: 'text-xs t-text-tertiary' },
+          legendOpen ? 'приховати' : 'показати')
+      ),
+      legendOpen && h('div', {
+        className: 'px-5 py-4',
+        style: { borderTop: '1px solid var(--border-subtle)' }
+      },
+        h('div', { className: 'grid md:grid-cols-2 gap-x-8 gap-y-3 text-xs' },
+          [
+            ['Акаунт', 'Номер рахунку IBKR, на який надійшла виплата.'],
+            ['Тикер', 'Символ фонду або акції. Бейдж ROC (жовтий) біля тикера означає що у виплаті була реверсія частини утримання.'],
+            ['Дата', 'Дата виплати дивіденду (pay date). Визначає курс НБУ та ставку військового збору для цієї виплати.'],
+            ['Gross cur', 'Нарахована сума дивіденду у валюті виплати — до будь-яких утримань. Це база для розрахунку українських податків.'],
+            ['WHT cur', 'US Withholding Tax — податок 15%, утриманий у США за формою W-8BEN. Показана ПОВНА сума утримання у валюті.'],
+            ['ROC', 'Return of Capital — повернення капіталу. Фонди NEOS/Goldman (QQQI, SPYI, GPIX) та деякі ETF (DIVO, AGG) періодично перекласифікують частину виплати як повернення капіталу. У США це реверсує утриманий податок. Не впливає на базу в Україні, показується як бонусний cashflow.'],
+            ['Net cur', 'Фактично отримано на рахунок у валюті: Gross − повне WHT + ROC.'],
+            ['Курс', 'Офіційний курс НБУ на дату виплати. Якщо виплата припала на вихідний/свято — використовується курс попереднього робочого дня.'],
+            ['Gross ₴', 'Gross у гривневому еквіваленті. Це і є база оподаткування в Україні.'],
+            ['ПДФО ₴', '9% податок на доходи фізосіб. Для іноземних дивідендів резидентів України — ст. 170.11.1 ПКУ.'],
+            ['ВЗ ₴', 'Військовий збір: 1,5% для доходів по 31.12.2024 включно, 5% для доходів з 01.01.2025. Ставка визначається автоматично за датою виплати.'],
+            ['Всього податку', 'Сума ПДФО + ВЗ до сплати в Україні з цієї виплати.'],
+            ['Чистий дохід', 'Реальний cashflow на руках: Gross − US WHT + ROC − українські податки.'],
+          ].map(([name, desc]) =>
+            h('div', { key: name, className: 'flex gap-3' },
+              h('div', {
+                className: 'font-mono font-medium flex-shrink-0',
+                style: { minWidth: 110, color: 'var(--accent)' }
+              }, name),
+              h('div', { className: 't-text-secondary' }, desc)
+            )
+          )
+        )
+      )
+    )
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: TAB_TRADES
+// ═══════════════════════════════════════════════════════════
+
+function TradesTab({ agg, settings }) {
+  const [filterAccount, setFilterAccount] = useState('all');
+  const [filterSymbol, setFilterSymbol] = useState('all');
+  // Set з ключами згорнутих груп. За замовчуванням — всі згорнуті.
+  const [collapsed, setCollapsed] = useState(() => new Set());
+  const seenKeysRef = useRef(new Set());
+
+  if (!agg) return h('div', { className: 't-text-tertiary' }, 'Немає даних.');
+
+  const accounts = Array.from(new Set(agg.trades.map(t => t.accountId)));
+  const symbols = Array.from(new Set(agg.trades.map(t => t.symbol))).sort();
+
+  const filtered = agg.trades.filter(t => {
+    if (filterAccount !== 'all' && t.accountId !== filterAccount) return false;
+    if (filterSymbol !== 'all' && t.symbol !== filterSymbol) return false;
+    return true;
+  });
+
+  const grouped = {};
+  filtered.forEach(t => {
+    const key = `${t.accountId}||${t.symbol}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(t);
+  });
+  const keys = Object.keys(grouped).sort();
+
+  // Нові групи (яких ще не бачили) — автоматично додаємо до collapsed
+  useEffect(() => {
+    const newlyCollapsed = [];
+    keys.forEach(k => {
+      if (!seenKeysRef.current.has(k)) {
+        seenKeysRef.current.add(k);
+        newlyCollapsed.push(k);
+      }
+    });
+    if (newlyCollapsed.length > 0) {
+      setCollapsed(prev => {
+        const next = new Set(prev);
+        newlyCollapsed.forEach(k => next.add(k));
+        return next;
+      });
+    }
+  }, [keys.join('|')]);
+
+  const toggleGroup = (key) => {
+    setCollapsed(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const isFullView = filterAccount === 'all' && filterSymbol === 'all';
+
+  const totalsBase = filtered.reduce((acc, t) => ({
+    costUSD: acc.costUSD + t.costUSD, proceedsUSD: acc.proceedsUSD + t.proceedsUSD,
+    costUAH: acc.costUAH + t.costBasisUAH, proceedsUAH: acc.proceedsUAH + t.proceedsUAH,
+    pnlUSD: acc.pnlUSD + t.pnlUSD, pnlUAH: acc.pnlUAH + t.pnlUAH,
+    profit: acc.profit + (t.pnlUAH > 0 ? t.pnlUAH : 0),
+    loss: acc.loss + (t.pnlUAH < 0 ? t.pnlUAH : 0),
+  }), { costUSD: 0, proceedsUSD: 0, costUAH: 0, proceedsUAH: 0, pnlUSD: 0, pnlUAH: 0, profit: 0, loss: 0 });
+
+  let tax, pdfo, vz;
+  if (isFullView) {
+    tax = agg.totals.tradesTaxUAH;
+    pdfo = agg.totals.tradesPdfoUAH;
+    vz = agg.totals.tradesVzUAH;
+  } else {
+    const taxable = Math.max(0, totalsBase.pnlUAH);
+    const vzR = getVzRateForYear(agg.reportYear);
+    pdfo = taxable * 0.18; vz = taxable * vzR; tax = pdfo + vz;
+  }
+  const totals = { ...totalsBase, pdfo, vz, tax };
+
+  return h('div', null,
+    h('div', { className: 'mb-5 flex items-center gap-6 flex-wrap' },
+      h('div', null,
+        h('span', { className: 'text-xs t-text-tertiary mr-2' }, 'Акаунт:'),
+        h('select', { value: filterAccount, onChange: (e) => setFilterAccount(e.target.value) },
+          h('option', { value: 'all' }, 'Всі'),
+          accounts.map(a => h('option', { key: a, value: a }, a))
+        )
+      ),
+      h('div', null,
+        h('span', { className: 'text-xs t-text-tertiary mr-2' }, 'Тикер:'),
+        h('select', { value: filterSymbol, onChange: (e) => setFilterSymbol(e.target.value), style: { fontFamily: 'JetBrains Mono, monospace' } },
+          h('option', { value: 'all' }, 'Всі'),
+          symbols.map(s => h('option', { key: s, value: s }, s))
+        )
+      ),
+      h('button', {
+        onClick: () => {
+          const allCollapsed = keys.every(k => collapsed.has(k));
+          setCollapsed(allCollapsed ? new Set() : new Set(keys));
+        },
+        className: 'px-2.5 py-1 text-xs rounded-md transition-all',
+        style: {
+          background: 'var(--bg-panel-2)',
+          color: 'var(--text-secondary)',
+          border: '1px solid var(--border-subtle)',
+        },
+        onMouseEnter: (e) => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; },
+        onMouseLeave: (e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; },
+      },
+        keys.length > 0 && keys.every(k => collapsed.has(k)) ? '▼ Розгорнути все' : '▶ Згорнути все'
+      ),
+      h('div', { className: 'ml-auto text-xs t-text-tertiary' },
+        `${filtered.length} з ${agg.trades.length} лотів`)
+    ),
+
+    h('div', {
+      className: 'card',
+      style: {
+        maxHeight: '70vh',
+        overflow: 'auto',
+        position: 'relative',
+      }
+    },
+      h('table', { className: 'w-full text-sm', style: { borderCollapse: 'separate', borderSpacing: 0 } },
+        h('thead', null,
+          h('tr', null,
+            ['Акаунт', 'Тикер', 'Відкр.', 'Qty', 'Ціна відкр.', 'Cost cur', 'Курс₁', 'Cost ₴',
+             'Закр.', 'Ціна закр.', 'Proceeds cur', 'Курс₂', 'Proceeds ₴', 'P&L cur', 'P&L ₴']
+              .map((c, i) =>
+                h('th', { key: i,
+                  className: `px-2.5 py-2.5 text-xs font-medium uppercase tracking-wider t-text-tertiary whitespace-nowrap ${i >= 3 ? 'text-right' : 'text-left'}`,
+                  style: {
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 10,
+                    background: 'var(--bg-table-header)',
+                    borderBottom: '1px solid var(--border)',
+                  }
+                }, c)
+              )
+          )
+        ),
+        h('tbody', null,
+          keys.flatMap(key => {
+            const rows = grouped[key];
+            const [accId, sym] = key.split('||');
+            const subtot = rows.reduce((acc, t) => ({
+              pnlUSD: acc.pnlUSD + t.pnlUSD, pnlUAH: acc.pnlUAH + t.pnlUAH,
+              cost: acc.cost + t.costBasisUAH, proc: acc.proc + t.proceedsUAH,
+            }), { pnlUSD: 0, pnlUAH: 0, cost: 0, proc: 0 });
+            const isCollapsed = collapsed.has(key);
+            return [
+              h('tr', { key: `h_${key}`, style: { borderBottom: '1px solid var(--border-subtle)' } },
+                h('td', {
+                  colSpan: 15,
+                  className: 'px-3 py-1.5 text-xs font-medium cursor-pointer select-none',
+                  style: { color: 'var(--accent)', background: 'var(--bg-group-header)' },
+                  onClick: () => toggleGroup(key)
+                },
+                  h('span', { style: { display: 'inline-block', width: 14, textAlign: 'center', fontSize: 9 } },
+                    isCollapsed ? '▶' : '▼'),
+                  `  ${accId}  •  ${sym}  `,
+                  h('span', { className: 't-text-tertiary' }, `(${rows.length} лотів)`)
+                )
+              ),
+              ...(isCollapsed ? [] : rows.map((t, i) => {
+                const cur = t.currency || 'USD';
+                return h('tr', { key: `r_${key}_${i}_${t.transactionID || ''}_${t.qty || 0}`,
+                  className: 'data-row whitespace-nowrap',
+                  style: { borderBottom: '1px solid var(--border-subtle)' } },
+                  // Акаунт
+                  h('td', { className: 'px-2.5 py-2 t-text-tertiary text-xs' }, t.accountId),
+                  // Тикер
+                  h('td', { className: 'px-2.5 py-2 font-mono font-medium text-sm' }, t.symbol),
+                  // Відкр. (дата)
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs t-text-tertiary' },
+                    fmtDateDDMMYY(t.openDate)),
+                  // Qty
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs' }, fmtNum(t.qty, 4)),
+                  // Ціна відкр.
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs' }, fmtCur(t.priceOpenUSD, cur)),
+                  // Cost cur
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs' }, fmtCur(t.costUSD, cur)),
+                  // Курс₁
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs t-text-tertiary' },
+                    t.openRate ? fmtNum(t.openRate, 3) : '—'),
+                  // Cost ₴
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs t-text-tertiary' }, fmtUAH(t.costBasisUAH)),
+                  // Закр. (дата)
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs t-text-tertiary' },
+                    fmtDateDDMMYY(t.closeDate)),
+                  // Ціна закр.
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs' }, fmtCur(t.priceCloseUSD, cur)),
+                  // Proceeds cur
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs' }, fmtCur(t.proceedsUSD, cur)),
+                  // Курс₂
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs t-text-tertiary' },
+                    t.closeRate ? fmtNum(t.closeRate, 3) : '—'),
+                  // Proceeds ₴
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs t-text-tertiary' }, fmtUAH(t.proceedsUAH)),
+                  // P&L cur
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono text-xs',
+                    style: { color: t.pnlUSD >= 0 ? 'var(--pos)' : 'var(--neg)' } },
+                    fmtCur(t.pnlUSD, cur)),
+                  // P&L ₴
+                  h('td', { className: 'px-2.5 py-2 text-right font-mono',
+                    style: { color: t.pnlUAH >= 0 ? 'var(--pos)' : 'var(--neg)' } },
+                    fmtUAH(t.pnlUAH)),
+                );
+              })),
+              h('tr', { key: `s_${key}`, className: 'font-medium',
+                style: { borderBottom: '1px solid var(--border)', background: 'var(--bg-group-header)' } },
+                // Акаунт, Тикер, Відкр., Qty, Ціна відкр. → лейбл
+                h('td', { colSpan: 5, className: 'px-3 py-2 text-right text-xs t-text-secondary' }, `Разом по ${sym}:`),
+                // Cost cur
+                h('td', { className: 'px-2.5 py-2 text-right font-mono text-sm' },
+                  fmtCur(rows.reduce((s, r) => s + r.costUSD, 0), rows[0]?.currency || 'USD')),
+                // Курс₁ — порожній
+                h('td'),
+                // Cost ₴
+                h('td', { className: 'px-2.5 py-2 text-right font-mono text-sm t-text-secondary' }, fmtUAH(subtot.cost)),
+                // Закр., Ціна закр. — порожні
+                h('td', { colSpan: 2 }),
+                // Proceeds cur
+                h('td', { className: 'px-2.5 py-2 text-right font-mono text-sm' },
+                  fmtCur(rows.reduce((s, r) => s + r.proceedsUSD, 0), rows[0]?.currency || 'USD')),
+                // Курс₂ — порожній
+                h('td'),
+                // Proceeds ₴
+                h('td', { className: 'px-2.5 py-2 text-right font-mono text-sm t-text-secondary' }, fmtUAH(subtot.proc)),
+                // P&L cur
+                h('td', { className: 'px-2.5 py-2 text-right font-mono text-sm',
+                  style: { color: subtot.pnlUSD >= 0 ? 'var(--pos)' : 'var(--neg)' } },
+                  fmtCur(subtot.pnlUSD, rows[0]?.currency || 'USD')),
+                // P&L ₴
+                h('td', { className: 'px-2.5 py-2 text-right font-mono text-sm',
+                  style: { color: subtot.pnlUAH >= 0 ? 'var(--pos)' : 'var(--neg)' } },
+                  fmtUAH(subtot.pnlUAH)),
+              )
+            ];
+          })
+        ),
+        h('tfoot', null,
+          h('tr', null,
+            // ВСЬОГО (₴): охоплює Акаунт, Тикер, Відкр., Qty, Ціна відкр., Cost cur, Курс₁
+            h('td', { colSpan: 7, className: 'px-3 py-3 text-sm font-semibold text-right uppercase tracking-wider',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, 'ВСЬОГО (₴):'),
+            // Cost ₴
+            h('td', { className: 'px-2.5 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, fmtUAH(totals.costUAH)),
+            // Закр., Ціна закр., Proceeds cur, Курс₂ — порожні
+            h('td', { colSpan: 4,
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }),
+            // Proceeds ₴
+            h('td', { className: 'px-2.5 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }, fmtUAH(totals.proceedsUAH)),
+            // P&L cur — порожньо (різні валюти)
+            h('td', {
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)' }
+            }),
+            // P&L ₴
+            h('td', { className: 'px-2.5 py-3 text-right font-mono font-bold',
+              style: { position: 'sticky', bottom: 0, background: 'var(--bg-group-header)', borderTop: '1px solid var(--border)', color: totals.pnlUAH >= 0 ? 'var(--pos)' : 'var(--neg)' }
+            }, fmtUAH(totals.pnlUAH)),
+          )
+        )
+      )
+    ),
+
+    totals.loss < 0 && h('div', {
+      className: 'mt-4 p-4 rounded-lg text-sm card',
+      style: { background: 'var(--accent-bg)', borderColor: 'var(--accent)' }
+    },
+      h('span', { className: 'font-medium', style: { color: 'var(--accent)' } }, 'Примітка: '),
+      h('span', { className: 't-text-primary' },
+        `Збитки ${fmtUAH(Math.abs(totals.loss))} можна перенести на наступні податкові періоди для зменшення майбутнього інвестприбутку (п. 170.2.6 ПКУ).`)
+    )
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: TAB_SUMMARY
+// ═══════════════════════════════════════════════════════════
+
+function TaxSummaryTab({ agg, settings }) {
+  if (!agg) return h('div', { className: 't-text-tertiary' }, 'Немає даних.');
+  const t = agg.totals;
+
+  // Helper: рядок з заголовком зліва і 2-3 значеннями справа (підписаними)
+  const TriRow = ({ label, cols }) =>
+    h('div', {
+      className: 'flex items-center justify-between py-2.5 flex-wrap gap-3',
+      style: { borderBottom: '1px solid var(--border-subtle)' }
+    },
+      h('span', { className: 'text-sm t-text-secondary flex-shrink-0' }, label),
+      h('div', { className: 'flex items-center gap-5 flex-wrap' },
+        cols.map((c, i) =>
+          h('div', { key: i, className: 'text-right', style: { minWidth: 120 } },
+            h('div', { className: 'text-[10px] uppercase tracking-wider t-text-tertiary' }, c.caption),
+            h('div', {
+              className: 'font-mono text-sm font-medium',
+              style: { color: c.tone || 'var(--text-primary)' }
+            }, c.value)
+          )
+        )
+      )
+    );
+
+  // Виділений блок "Податок до сплати в Україні"
+  const TaxBlock = ({ rate1Label, rate1Value, rate2Label, rate2Value, totalValue, note }) =>
+    h('div', {
+      className: 'mt-4 p-4 rounded-lg',
+      style: {
+        background: 'var(--warn-bg)',
+        border: '1px solid var(--warn)',
+      }
+    },
+      h('div', { className: 'text-xs uppercase tracking-wider mb-3 font-semibold', style: { color: 'var(--warn)' } },
+        'Податок до сплати в Україні'),
+      h('div', { className: 'grid grid-cols-2 gap-4 mb-3' },
+        h('div', null,
+          h('div', { className: 'text-xs t-text-tertiary mb-1' }, rate1Label),
+          h('div', { className: 'font-mono text-lg font-semibold' }, rate1Value)
+        ),
+        h('div', null,
+          h('div', { className: 'text-xs t-text-tertiary mb-1' }, rate2Label),
+          h('div', { className: 'font-mono text-lg font-semibold' }, rate2Value)
+        )
+      ),
+      h('div', {
+        className: 'pt-3 flex items-center justify-between',
+        style: { borderTop: '1px solid var(--warn)' }
+      },
+        h('span', { className: 'text-sm font-semibold' }, 'Разом податок:'),
+        h('span', { className: 'font-mono text-xl font-bold', style: { color: 'var(--warn)' } }, totalValue)
+      ),
+      note && h('div', { className: 'mt-3 text-xs t-text-secondary italic' }, note)
+    );
+
+  const sortedDivCcy = (agg.divByCurrency || []).slice().sort((a, b) => b.grossUAH - a.grossUAH);
+  const sortedTradesCcy = (agg.tradesByCurrency || []).slice().sort((a, b) => Math.abs(b.pnlUAH) - Math.abs(a.pnlUAH));
+
+  // Загальні UAH-еквіваленти
+  const totalRocUAH = (agg.divByCurrency || []).reduce((s, r) => s + (r.rocUAH || 0), 0);
+  const divNetUAH = t.grossDividendsUAH - t.usWhtUAH + totalRocUAH;
+  const divNetUAHAfterUATax = divNetUAH - t.dividendsTaxUAH;
+
+  // Блок I — форма рядка дивідендів по валюті
+  const divCcyRow = (row) => {
+    const netCur = row.grossCurrency - row.whtCurrency + (row.rocCurrency || 0);
+    const cols = [
+      { caption: 'Gross', value: fmtCur(row.grossCurrency, row.currency), tone: 'var(--pos)' },
+      { caption: 'WHT', value: row.whtCurrency > 0 ? '−' + fmtCur(row.whtCurrency, row.currency) : '—', tone: 'var(--neg)' },
+    ];
+    if ((row.rocCurrency || 0) > 0) {
+      cols.push({ caption: 'ROC', value: '+' + fmtCur(row.rocCurrency, row.currency), tone: 'var(--warn)' });
+    }
+    cols.push({ caption: 'Net', value: fmtCur(netCur, row.currency), tone: 'var(--text-primary)' });
+    return h(TriRow, {
+      key: row.currency,
+      label: `Сума дивідендів (${row.currency}):`,
+      cols
+    });
+  };
+
+  // Блок II — форма рядка P&L по валюті
+  const tradesCcyRow = (row) => {
+    const pct = row.costCurrency ? (row.pnlCurrency / row.costCurrency * 100) : 0;
+    return h(TriRow, {
+      key: row.currency,
+      label: `Загальний P&L (${row.currency}):`,
+      cols: [
+        { caption: 'Сума', value: (row.pnlCurrency >= 0 ? '+' : '') + fmtCur(row.pnlCurrency, row.currency),
+          tone: row.pnlCurrency >= 0 ? 'var(--pos)' : 'var(--neg)' },
+        { caption: '%', value: `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`,
+          tone: pct >= 0 ? 'var(--pos)' : 'var(--neg)' },
+      ]
+    });
+  };
+
+  // UAH-рядки
+  const divUAHCols = [
+    { caption: 'Gross', value: fmtUAH(t.grossDividendsUAH), tone: 'var(--pos)' },
+    { caption: 'WHT', value: t.usWhtUAH > 0 ? '−' + fmtUAH(t.usWhtUAH) : '—', tone: 'var(--neg)' },
+  ];
+  if (totalRocUAH > 0) {
+    divUAHCols.push({ caption: 'ROC', value: '+' + fmtUAH(totalRocUAH), tone: 'var(--warn)' });
+  }
+  divUAHCols.push({ caption: 'Net', value: fmtUAH(divNetUAH), tone: 'var(--text-primary)' });
+  const divUAHRow = h(TriRow, {
+    label: 'Сума дивідендів (UAH):',
+    cols: divUAHCols
+  });
+
+  const pctUAH = t.tradesPnlUAH && sortedTradesCcy.reduce((s, r) => s + r.costUAH, 0)
+    ? (t.tradesPnlUAH / sortedTradesCcy.reduce((s, r) => s + r.costUAH, 0) * 100) : 0;
+  const tradesUAHRow = h(TriRow, {
+    label: 'Загальний P&L (UAH):',
+    cols: [
+      { caption: 'Сума', value: (t.tradesPnlUAH >= 0 ? '+' : '') + fmtUAH(t.tradesPnlUAH),
+        tone: t.tradesPnlUAH >= 0 ? 'var(--pos)' : 'var(--neg)' },
+      { caption: '%', value: `${pctUAH >= 0 ? '+' : ''}${pctUAH.toFixed(2)}%`,
+        tone: pctUAH >= 0 ? 'var(--pos)' : 'var(--neg)' },
+    ]
+  });
+
+  return h('div', { className: 'max-w-4xl mx-auto space-y-6' },
+    // Заголовок
+    h('div', { className: 'card p-6' },
+      h('h2', { className: 'text-xl font-bold mb-1' }, 'Податковий підсумок для декларації'),
+      h('div', { className: 'text-sm t-text-tertiary' },
+        `Звітний рік: ${agg.reportYear || 'всі дати'} · Резидент України`)
+    ),
+
+    // Блок I — Дивіденди
+    h('div', { className: 'card p-6' },
+      h('h3', { className: 'text-xs uppercase tracking-wider mb-4 font-semibold', style: { color: 'var(--accent)' } },
+        'I. Іноземні доходи — дивіденди'),
+      sortedDivCcy.length === 0
+        ? h('div', { className: 't-text-tertiary text-sm italic' }, 'Дивіденди відсутні за цей період.')
+        : h('div', null,
+            sortedDivCcy.map(divCcyRow),
+            divUAHRow,
+            h(TaxBlock, {
+              rate1Label: `ПДФО 9% ${settings.usWhtMode === 'aggressive' ? '(з US credit)' : '(без credit)'}`,
+              rate1Value: fmtUAH(t.dividendsPdfoUAH),
+              rate2Label: `Військовий збір ${t.dividendsVzMixed ? '1,5% + 5%' : fmtVzRate(t.dividendsVzRate)}`,
+              rate2Value: fmtUAH(t.dividendsVzUAH),
+              totalValue: fmtUAH(t.dividendsTaxUAH),
+            })
+          )
+    ),
+
+    // Блок II — Інвестприбуток
+    h('div', { className: 'card p-6' },
+      h('h3', { className: 'text-xs uppercase tracking-wider mb-4 font-semibold', style: { color: 'var(--accent)' } },
+        'II. Інвестиційний прибуток'),
+      sortedTradesCcy.length === 0
+        ? h('div', { className: 't-text-tertiary text-sm italic' }, 'Закриті позиції відсутні за цей період.')
+        : h('div', null,
+            sortedTradesCcy.map(tradesCcyRow),
+            tradesUAHRow,
+            // Прибуткові / збиткові угоди (деталізація)
+            h('div', {
+              className: 'mt-3 grid grid-cols-2 gap-3 text-sm',
+              style: { paddingTop: 6 }
+            },
+              h('div', { className: 'flex justify-between' },
+                h('span', { className: 't-text-tertiary' }, 'Сума прибуткових угод:'),
+                h('span', { className: 'font-mono', style: { color: 'var(--pos)' } }, fmtUAH(t.tradesProfitUAH))
+              ),
+              h('div', { className: 'flex justify-between' },
+                h('span', { className: 't-text-tertiary' }, 'Сума збиткових угод:'),
+                h('span', { className: 'font-mono', style: { color: 'var(--neg)' } }, fmtUAH(t.tradesLossUAH))
+              )
+            ),
+            settings.priorLossUAH > 0 && h('div', { className: 'mt-2 text-xs t-text-tertiary italic' },
+              `− Збитки минулих періодів: ${fmtUAH(-t.priorLossUsedUAH)} · База оподаткування: ${fmtUAH(t.taxableBaseUAH)}`),
+
+            t.taxableBaseUAH > 0
+              ? h(TaxBlock, {
+                  rate1Label: 'ПДФО 18%',
+                  rate1Value: fmtUAH(t.tradesPdfoUAH),
+                  rate2Label: `Військовий збір ${fmtVzRate(t.tradesVzRate)}`,
+                  rate2Value: fmtUAH(t.tradesVzUAH),
+                  totalValue: fmtUAH(t.tradesTaxUAH),
+                })
+              : h(TaxBlock, {
+                  rate1Label: 'ПДФО 18%',
+                  rate1Value: fmtUAH(0),
+                  rate2Label: `Військовий збір ${fmtVzRate(t.tradesVzRate)}`,
+                  rate2Value: fmtUAH(0),
+                  totalValue: fmtUAH(0),
+                  note: t.tradesPnlUAH < 0
+                    ? `Збиток — податок не сплачується. Сума ${fmtUAH(t.lossCarryForwardUAH)} переноситься на наступні роки.`
+                    : t.priorLossUsedUAH > 0
+                      ? `Прибуток повністю покрито збитками минулих періодів.`
+                      : `Збиток — податок не сплачується.`
+                })
+          )
+    ),
+
+    // Загальний підсумок податку
+    h('div', {
+      className: 'card p-6',
+      style: {
+        background: 'linear-gradient(135deg, var(--accent-bg), var(--warn-bg))',
+        borderColor: 'var(--accent)',
+        borderWidth: 2,
+      }
+    },
+      h('div', { className: 'text-xs uppercase tracking-wider mb-3 font-semibold t-text-secondary' },
+        'Загальний підсумок податку в Україні'),
+      h('div', { className: 'grid grid-cols-2 gap-4 mb-4' },
+        h('div', { className: 'card p-4', style: { background: 'var(--bg-panel)' } },
+          h('div', { className: 'text-xs t-text-tertiary mb-1' }, 'З дивідендів'),
+          h('div', { className: 'font-mono text-lg font-semibold' }, fmtUAH(t.dividendsTaxUAH)),
+          h('div', { className: 'text-xs t-text-tertiary mt-1' },
+            `ПДФО ${fmtUAH(t.dividendsPdfoUAH, 0)} + ВЗ ${fmtUAH(t.dividendsVzUAH, 0)}`)
+        ),
+        h('div', { className: 'card p-4', style: { background: 'var(--bg-panel)' } },
+          h('div', { className: 'text-xs t-text-tertiary mb-1' }, 'З інвестприбутку'),
+          h('div', { className: 'font-mono text-lg font-semibold' }, fmtUAH(t.tradesTaxUAH)),
+          h('div', { className: 'text-xs t-text-tertiary mt-1' },
+            `ПДФО ${fmtUAH(t.tradesPdfoUAH, 0)} + ВЗ ${fmtUAH(t.tradesVzUAH, 0)}`)
+        )
+      ),
+      h('div', {
+        className: 'pt-4 flex items-center justify-between',
+        style: { borderTop: '2px solid var(--accent)' }
+      },
+        h('span', { className: 'text-lg font-bold' }, 'РАЗОМ ДО СПЛАТИ'),
+        h('span', { className: 'font-mono text-3xl font-bold', style: { color: 'var(--warn)' } }, fmtUAH(t.totalTaxUAH))
+      )
+    ),
+
+    // Дедлайни
+    h('div', { className: 'card p-6' },
+      h('h3', { className: 'text-sm font-semibold uppercase tracking-wider t-text-secondary mb-4' }, 'Дедлайни'),
+      h('div', { className: 'space-y-3' },
+        h('div', { className: 'flex items-start gap-3' },
+          h('div', { className: 'text-xl' }, '📋'),
+          h('div', null,
+            h('div', { className: 'font-medium' }, 'До 1 травня'),
+            h('div', { className: 't-text-tertiary text-xs mt-0.5' },
+              'Подача декларації про майновий стан і доходи за звітний рік')
+          )
+        ),
+        h('div', { className: 'flex items-start gap-3' },
+          h('div', { className: 'text-xl' }, '💰'),
+          h('div', null,
+            h('div', { className: 'font-medium' }, 'До 1 серпня'),
+            h('div', { className: 't-text-tertiary text-xs mt-0.5' }, 'Сплата нарахованих податків (ПДФО + ВЗ)')
+          )
+        )
+      )
+    ),
+
+    // Методологія
+    h('div', { className: 'card p-5 text-xs t-text-secondary space-y-1' },
+      h('div', { className: 'font-medium t-text-primary mb-1' }, 'Методологія розрахунку'),
+      h('div', null, '• Курс НБУ застосовується на дату trade date'),
+      h('div', null, '• Дивіденди: ПДФО 9% + ВЗ (1,5% по 2024 рік · 5% з 2025 року)'),
+      h('div', null, '• Інвестприбуток: ПДФО 18% + ВЗ (1,5% для звіту за 2024 і раніше · 5% з 2025 року) з NET результату за рік'),
+      h('div', null, '• Збитки окремих угод компенсують прибуток інших у межах року'),
+      h('div', null, '• Збитки минулих періодів застосовуються ТІЛЬКИ до інвестприбутку'),
+      h('div', { className: 'pt-2 t-text-tertiary italic' },
+        'Цей розрахунок — довідковий. Для офіційної подачі декларації проконсультуйтеся з податковим радником.')
+    )
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION: APP (root)
+// ═══════════════════════════════════════════════════════════
+
+function App() {
+  // Theme state
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem('ibkr-tax-ua:theme') || 'dark'; } catch { return 'dark'; }
+  });
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('ibkr-tax-ua:theme', theme); } catch {}
+  }, [theme]);
+
+  const [tab, setTab] = useState('upload');
+  const [xmlText, setXmlText] = useState(null);
+  const [parseError, setParseError] = useState(null);
+  const [loadingStatus, setLoadingStatus] = useState(null);
+  const [loadingStatusKind, setLoadingStatusKind] = useState('info'); // 'info' | 'error'
+  const [rateMap, setRateMap] = useState(new Map());
+  const [rateDiagnostics, setRateDiagnostics] = useState(null);
+
+  const [settings, setSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ibkr-tax-ua:settings');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return { usWhtMode: 'conservative', reportYear: null, priorLossUAH: 0 };
+  });
+  useEffect(() => {
+    try { localStorage.setItem('ibkr-tax-ua:settings', JSON.stringify(settings)); } catch {}
+  }, [settings]);
+
+  const parsed = useMemo(() => {
+    if (!xmlText) return null;
+    try {
+      setParseError(null);
+      return parseIBKRXml(xmlText);
+    } catch (e) {
+      setParseError(e.message);
+      return null;
+    }
+  }, [xmlText]);
+
+  const classified = useMemo(() => parsed ? classifyTransactions(parsed) : null, [parsed]);
+
+  // Extract report date range from parsed accounts AND actual operation dates
+  const reportDateRange = useMemo(() => {
+    if (!parsed) return null;
+    const froms = parsed.accounts.map(a => a.fromDate).filter(Boolean);
+    const tos = parsed.accounts.map(a => a.toDate).filter(Boolean);
+    if (!froms.length || !tos.length) return null;
+    return { from: froms.sort()[0], to: tos.sort()[tos.length - 1] };
+  }, [parsed]);
+
+  // Визначаємо МІНІМАЛЬНУ дату з усіх операцій (бо лот може бути відкритий раніше fromDate)
+  const rateLoadRange = useMemo(() => {
+    if (!classified || !reportDateRange) return null;
+    let minDate = reportDateRange.from;
+    let maxDate = reportDateRange.to;
+    classified.accounts.forEach((acc) => {
+      acc.classified.dividends.forEach((d) => {
+        const k = d.settleDateISO || d.dateTimeISO;
+        if (k && k < minDate) minDate = k;
+        if (k && k > maxDate) maxDate = k;
+      });
+      acc.classified.trades.forEach((lot) => {
+        [lot.tradeDateISO, lot.openDateTimeISO].forEach((k) => {
+          if (k && k < minDate) minDate = k;
+          if (k && k > maxDate) maxDate = k;
+        });
+      });
+    });
+    return { from: minDate, to: maxDate };
+  }, [classified, reportDateRange]);
+
+  // Валюти у звіті (для автозавантаження)
+  const reportCurrencies = useMemo(() => {
+    if (!classified) return [];
+    const set = new Set();
+    classified.accounts.forEach((acc) => {
+      acc.classified.dividends.forEach((d) => d.currency && set.add(d.currency));
+      acc.classified.trades.forEach((l) => l.currency && set.add(l.currency));
+    });
+    return Array.from(set).filter((c) => c !== 'UAH').sort();
+  }, [classified]);
+
+  // Роки з операцій (для dropdown "Звітний рік")
+  const reportYears = useMemo(() => {
+    if (!classified) return [];
+    const set = new Set();
+    classified.accounts.forEach((acc) => {
+      acc.classified.dividends.forEach((d) => {
+        const k = d.settleDateISO || d.dateTimeISO;
+        if (k) set.add(k.slice(0, 4));
+      });
+      acc.classified.trades.forEach((l) => {
+        if (l.tradeDateISO) set.add(l.tradeDateISO.slice(0, 4));
+      });
+    });
+    return Array.from(set).sort();
+  }, [classified]);
+
+  const [cacheCoverage, setCacheCoverage] = useState({});
+  useEffect(() => {
+    (async () => setCacheCoverage(await getCacheCoverage()))();
+  }, []);
+
+  // Auto-fetch rates — per-day CORS-friendly, batched, cache-first
+  useEffect(() => {
+    if (!classified || !rateLoadRange) return;
+    (async () => {
+      const currencies = Array.from(new Set(['USD', 'EUR', ...reportCurrencies]));
+      setLoadingStatusKind('info');
+      setLoadingStatus(`Завантаження курсів НБУ за період ${fmtDateDDMMYYYY(rateLoadRange.from)} — ${fmtDateDDMMYYYY(rateLoadRange.to)}…`);
+      try {
+        const { flat, diagnostics } = await bulkLoadRates(
+          currencies, rateLoadRange.from, rateLoadRange.to,
+          (ccy, doneInCur, totalInCur, curIdx, totalCur) => {
+            const progress = totalInCur > 0 ? ` (${doneInCur}/${totalInCur} днів)` : '';
+            setLoadingStatus(`Курси НБУ: ${ccy}${progress} · валюта ${curIdx}/${totalCur}`);
+          }
+        );
+        setRateMap(flat);
+        setRateDiagnostics(diagnostics);
+        setCacheCoverage(await getCacheCoverage());
+
+        if (flat.size === 0) {
+          setLoadingStatusKind('error');
+          setLoadingStatus(`✗ Не вдалося завантажити жодного курсу НБУ. Перевірте з'єднання з bank.gov.ua.`);
+        } else if (diagnostics.anyError) {
+          setLoadingStatusKind('error');
+          const failures = Object.entries(diagnostics.byCurrency)
+            .filter(([, v]) => v.failed > 0 || v.failed === -1)
+            .map(([c, v]) => `${c}: ${v.failed === -1 ? 'помилка' : v.failed + ' днів відсутні'}`)
+            .join(', ');
+          setLoadingStatus(`⚠ Завантажено ${flat.size} курсів, але деякі дні відсутні: ${failures}. Гривневі еквіваленти можуть бути неточними.`);
+        } else {
+          setLoadingStatus(`✓ Завантажено ${flat.size} курсів НБУ (${currencies.join(', ')})`);
+          setTimeout(() => setLoadingStatus(null), 2500);
+        }
+      } catch (e) {
+        setLoadingStatusKind('error');
+        setLoadingStatus(`✗ Помилка завантаження курсів: ${e.message}`);
+      }
+    })();
+  }, [classified, rateLoadRange, reportCurrencies]);
+
+  const calcResult = useMemo(() => {
+    if (!classified || rateMap.size === 0) return null;
+    return calculateAll(classified, rateMap, settings);
+  }, [classified, rateMap, settings]);
+
+  const agg = useMemo(() => {
+    if (!calcResult) return null;
+    return buildAggregates(calcResult, settings);
+  }, [calcResult, settings.reportYear, settings.priorLossUAH]);
+
+  const handleFileLoaded = (text, err) => {
+    if (err) {
+      setParseError(err); setXmlText(null); return;
+    }
+    setXmlText(text); setParseError(null);
+    // Прибрано авто-перехід — користувач сам вирішує коли перейти на Dashboard
+  };
+
+  const handleClearCache = async () => {
+    await clearRateCache();
+    setRateMap(new Map());
+    setCacheCoverage({});
+    setLoadingStatusKind('info');
+    setLoadingStatus('Кеш очищено. Перезавантажте XML, щоб оновити курси.');
+    setTimeout(() => setLoadingStatus(null), 3000);
+  };
+
+  const divCount = agg?.divs.length || 0;
+  const tradeCount = agg?.trades.length || 0;
+
+  const tabs = [
+    { id: 'upload', label: 'Upload' },
+    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'dividends', label: 'Дивіденди', badge: divCount || null },
+    { id: 'trades', label: 'Угоди', badge: tradeCount || null },
+    { id: 'summary', label: 'Підсумок' },
+  ];
+
+  return h('div', { className: 'min-h-screen relative' },
+    h('header', {
+      className: 'sticky top-0 z-20 backdrop-blur-md',
+      style: { background: 'var(--bg-overlay)', borderBottom: '1px solid var(--border-subtle)' }
+    },
+      h('div', { className: 'max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-6 flex-wrap' },
+        h('div', { className: 'flex items-center gap-3' },
+          h('div', {
+            className: 'w-8 h-8 rounded-lg flex items-center justify-center font-mono font-bold text-sm',
+            style: { background: 'linear-gradient(135deg, var(--accent), var(--pos))', color: '#fff' }
+          }, '₴'),
+          h('div', null,
+            h('div', { className: 'font-semibold tracking-tight' }, 'ProfitTax UA'),
+            h('div', { className: 'text-[10px] uppercase tracking-wider t-text-tertiary' },
+              'Інвестиційні результати і розрахунок податків для резидента України')
+          )
+        ),
+        h('div', { className: 'flex items-center gap-2' },
+          h('nav', { className: 'flex items-center gap-1' },
+            tabs.map(t =>
+              h(TabButton, { key: t.id, active: tab === t.id, onClick: () => setTab(t.id), badge: t.badge }, t.label)
+            )
+          ),
+          h('div', { className: 'ml-2' }, h(ThemeToggle, { theme, setTheme }))
+        )
+      )
+    ),
+
+    h('main', { className: 'relative z-10 max-w-7xl mx-auto px-6 py-8' },
+      // Глобальний banner: курси НБУ відсутні (видно на всіх вкладках, крім Upload)
+      tab !== 'upload' && xmlText && rateMap.size === 0 && h('div', {
+        className: 'mb-5 rounded-lg p-4 text-sm',
+        style: { background: 'var(--neg-bg)', color: 'var(--neg)', border: '1px solid var(--neg)' }
+      },
+        h('div', { className: 'font-medium mb-1' }, '⚠ Курси НБУ відсутні'),
+        h('div', { className: 'text-xs' },
+          'Гривневі еквіваленти не розраховані. Перевірте з\'єднання з bank.gov.ua або перезавантажте XML на вкладці Upload.')
+      ),
+      // Попередження: курси частково відсутні (є diagnostics з failed > 0)
+      tab !== 'upload' && xmlText && rateMap.size > 0 && rateDiagnostics?.anyError && h('div', {
+        className: 'mb-5 rounded-lg p-4 text-sm',
+        style: { background: 'var(--warn-bg)', color: 'var(--warn)', border: '1px solid var(--warn)' }
+      },
+        h('div', { className: 'font-medium mb-1' }, '⚠ Деякі курси НБУ не завантажилися'),
+        h('div', { className: 'text-xs' },
+          Object.entries(rateDiagnostics.byCurrency)
+            .filter(([, v]) => v.failed > 0 || v.failed === -1)
+            .map(([c, v]) => `${c}: ${v.failed === -1 ? 'помилка запиту' : v.failed + ' днів відсутні'}`)
+            .join(' · '),
+          ' — гривневі еквіваленти для цих дат можуть бути неточними або рахуватись з попереднього робочого дня.'
+        )
+      ),
+
+      tab === 'upload' && h(UploadTab, {
+        onFileLoaded: handleFileLoaded,
+        parseError, xmlLoaded: !!xmlText,
+        loadingStatus, loadingStatusKind,
+        onClearCache: handleClearCache,
+        settings, setSettings,
+        reportDateRange, reportYears,
+        cacheCoverage, reportCurrencies,
+      }),
+      tab === 'dashboard' && h(DashboardTab, { agg, settings, rateMap, rateLoadRange }),
+      tab === 'dividends' && h(DividendsTab, { agg }),
+      tab === 'trades' && h(TradesTab, { agg, settings }),
+      tab === 'summary' && h(TaxSummaryTab, { agg, settings }),
+    ),
+
+    h('footer', { className: 'max-w-7xl mx-auto px-6 py-8 text-xs t-text-tertiary',
+      style: { borderTop: '1px solid var(--border-subtle)' } },
+      h('div', null, 'v0.3.15 · ProfitTax UA · Yavo Max 2026 (c) · Created with Claude.ai · BETA TESTING')
+    )
+  );
+}
+
+createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>
